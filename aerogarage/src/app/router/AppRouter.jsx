@@ -1,4 +1,5 @@
 ﻿import { useRouter } from "./routerStore";
+import ProtectedRoute from "./ProtectedRoute";
 import PublicLayout from "../../layouts/PublicLayout";
 import ClientLayout from "../../layouts/ClientLayout";
 import TrainingLayout from "../../layouts/TrainingLayout";
@@ -16,6 +17,7 @@ import LineMaintenancePage from "../../modules/public/pages/ServiceLineMaintenan
 import AircraftSecurityPage from "../../modules/public/pages/ServiceAircraftSecurityPage";
 import RepairShopPage from "../../modules/public/pages/ServiceRepairShopPage";
 import ClientLoginPage from "../../modules/client/pages/LoginPage";
+import ClientRegisterPage from "../../modules/client/pages/RegisterPage";
 import ClientDashboardPage from "../../modules/client/pages/DashboardPage";
 import TrainingLoginPage from "../../modules/training/pages/LoginPage";
 import TrainingDashboardPage from "../../modules/training/pages/DashboardPage";
@@ -37,11 +39,36 @@ const ROUTES = [
   { path: "/careers", layout: PublicLayout, page: CareersPage },
   { path: "/contact", layout: PublicLayout, page: ContactPage },
   { path: "/client/login", layout: ClientLayout, page: ClientLoginPage },
-  { path: "/client/dashboard", layout: ClientLayout, page: ClientDashboardPage },
+  { path: "/client/register", layout: ClientLayout, page: ClientRegisterPage },
+  {
+    path: "/client/dashboard",
+    layout: ClientLayout,
+    page: ClientDashboardPage,
+    protected: true,
+    roles: ["client", "staff", "admin"],
+    loginPath: "/client/login",
+    portalTitle: "Client Portal",
+  },
   { path: "/training/login", layout: TrainingLayout, page: TrainingLoginPage },
-  { path: "/training/dashboard", layout: TrainingLayout, page: TrainingDashboardPage },
+  {
+    path: "/training/dashboard",
+    layout: TrainingLayout,
+    page: TrainingDashboardPage,
+    protected: true,
+    roles: ["student", "staff", "admin"],
+    loginPath: "/training/login",
+    portalTitle: "Training Portal",
+  },
   { path: "/admin/login", layout: AdminLayout, page: AdminLoginPage },
-  { path: "/admin/dashboard", layout: AdminLayout, page: AdminDashboardPage },
+  {
+    path: "/admin/dashboard",
+    layout: AdminLayout,
+    page: AdminDashboardPage,
+    protected: true,
+    roles: ["admin", "staff"],
+    loginPath: "/admin/login",
+    portalTitle: "Admin System",
+  },
 ];
 
 export default function AppRouter() {
@@ -61,7 +88,17 @@ export default function AppRouter() {
 
   return (
     <Layout>
-      <Page />
+      {route.protected ? (
+        <ProtectedRoute
+          allowRoles={route.roles}
+          loginPath={route.loginPath}
+          portalTitle={route.portalTitle}
+        >
+          <Page />
+        </ProtectedRoute>
+      ) : (
+        <Page />
+      )}
     </Layout>
   );
 }

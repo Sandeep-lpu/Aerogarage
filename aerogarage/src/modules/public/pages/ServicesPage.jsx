@@ -1,9 +1,9 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 import Link from "../../../app/router/Link";
 import { Badge, Button, Card, Section, Table, TextBlock, Title } from "../../../components/ui";
+import { fetchServicesContent, parseApiError } from "../../../services/api/publicApi";
 import MediaStage from "../components/media/MediaStage";
 import { serviceComparison } from "../content/servicesCatalog";
-import { fetchServicesContent, parseApiError } from "../../../services/api/publicApi";
 
 const processFramework = [
   "Discovery and scope definition with airline/airport stakeholders",
@@ -17,28 +17,24 @@ export default function ServicesPage() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    let mounted = true;
+  const loadServices = useCallback(async () => {
+    setLoading(true);
+    setErrorMessage("");
 
-    async function load() {
-      try {
-        const data = await fetchServicesContent();
-        if (!mounted) return;
-        setServices(data?.data?.services || []);
-      } catch (error) {
-        if (!mounted) return;
-        const parsed = parseApiError(error);
-        setErrorMessage(parsed.message || "Failed to load services content");
-      } finally {
-        if (mounted) setLoading(false);
-      }
+    try {
+      const data = await fetchServicesContent();
+      setServices(data?.data?.services || []);
+    } catch (error) {
+      const parsed = parseApiError(error);
+      setErrorMessage(parsed.message || "Failed to load services content");
+    } finally {
+      setLoading(false);
     }
-
-    load();
-    return () => {
-      mounted = false;
-    };
   }, []);
+
+  useEffect(() => {
+    loadServices();
+  }, [loadServices]);
 
   return (
     <>
@@ -52,12 +48,7 @@ export default function ServicesPage() {
         </TextBlock>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button as={Link} to="/contact">Request Service Proposal</Button>
-          <Button
-            as={Link}
-            to="/contact"
-            variant="secondary"
-            className="border-white text-white hover:bg-white/10"
-          >
+          <Button as={Link} to="/contact" variant="secondary" className="border-white text-white hover:bg-white/10">
             Book Operations Meeting
           </Button>
         </div>
@@ -73,7 +64,12 @@ export default function ServicesPage() {
 
       <Section title="Service Hub" subtitle="Select a service lane to view detailed scope, process, and conversion path.">
         {loading ? <TextBlock>Loading services...</TextBlock> : null}
-        {errorMessage ? <TextBlock className="text-rose-700">{errorMessage}</TextBlock> : null}
+        {errorMessage ? (
+          <div className="flex items-center gap-3">
+            <TextBlock className="text-rose-700">{errorMessage}</TextBlock>
+            <Button variant="secondary" onClick={loadServices}>Retry</Button>
+          </div>
+        ) : null}
 
         {!loading && !errorMessage ? (
           <div className="grid gap-6 md:grid-cols-2">

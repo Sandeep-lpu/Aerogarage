@@ -1,8 +1,8 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 import Link from "../../../app/router/Link";
 import { Badge, Button, Card, Section, TextBlock, Title } from "../../../components/ui";
-import MediaStage from "../components/media/MediaStage";
 import { fetchTrainingContent, parseApiError } from "../../../services/api/publicApi";
+import MediaStage from "../components/media/MediaStage";
 
 const trust = [
   "RJAA affiliated training pathway",
@@ -16,28 +16,24 @@ export default function TrainingPage() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    let mounted = true;
+  const loadTraining = useCallback(async () => {
+    setLoading(true);
+    setErrorMessage("");
 
-    async function load() {
-      try {
-        const data = await fetchTrainingContent();
-        if (!mounted) return;
-        setTraining(data?.data?.training || null);
-      } catch (error) {
-        if (!mounted) return;
-        const parsed = parseApiError(error);
-        setErrorMessage(parsed.message || "Failed to load training content");
-      } finally {
-        if (mounted) setLoading(false);
-      }
+    try {
+      const data = await fetchTrainingContent();
+      setTraining(data?.data?.training || null);
+    } catch (error) {
+      const parsed = parseApiError(error);
+      setErrorMessage(parsed.message || "Failed to load training content");
+    } finally {
+      setLoading(false);
     }
-
-    load();
-    return () => {
-      mounted = false;
-    };
   }, []);
+
+  useEffect(() => {
+    loadTraining();
+  }, [loadTraining]);
 
   const pathways = training?.pathways || [];
   const modules = training?.modules || [];
@@ -70,7 +66,12 @@ export default function TrainingPage() {
 
       <Section title="Program Tracks" subtitle="Structured pathways aligned with international licensing frameworks.">
         {loading ? <TextBlock>Loading training pathways...</TextBlock> : null}
-        {errorMessage ? <TextBlock className="text-rose-700">{errorMessage}</TextBlock> : null}
+        {errorMessage ? (
+          <div className="flex items-center gap-3">
+            <TextBlock className="text-rose-700">{errorMessage}</TextBlock>
+            <Button variant="secondary" onClick={loadTraining}>Retry</Button>
+          </div>
+        ) : null}
 
         {!loading && !errorMessage ? (
           <div className="grid gap-4 md:grid-cols-2">

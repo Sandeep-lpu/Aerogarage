@@ -16,6 +16,8 @@ const env = validateEnv();
 connectDB(env.MONGO_URI);
 
 const app = express();
+app.locals.env = env;
+
 app.use(cors());
 app.use(express.json());
 app.use(requestLogger);

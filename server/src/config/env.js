@@ -1,4 +1,8 @@
-﻿import { DEFAULT_PORT } from "./constants.js";
+﻿import {
+  DEFAULT_ACCESS_EXPIRES_IN,
+  DEFAULT_PORT,
+  DEFAULT_REFRESH_EXPIRES_IN,
+} from "./constants.js";
 
 function toValidPort(value) {
   if (value === undefined || value === null || value === "") {
@@ -35,5 +39,13 @@ export function validateEnv(env = process.env) {
     MONGO_URI: String(env.MONGO_URI).trim(),
     PORT: port,
     NODE_ENV: env.NODE_ENV || "development",
+    JWT_ACCESS_SECRET:
+      env.JWT_ACCESS_SECRET || "dev_access_secret_change_in_production",
+    JWT_REFRESH_SECRET:
+      env.JWT_REFRESH_SECRET || "dev_refresh_secret_change_in_production",
+    JWT_ACCESS_EXPIRES_IN:
+      env.JWT_ACCESS_EXPIRES_IN || DEFAULT_ACCESS_EXPIRES_IN,
+    JWT_REFRESH_EXPIRES_IN:
+      env.JWT_REFRESH_EXPIRES_IN || DEFAULT_REFRESH_EXPIRES_IN,
   };
 }
