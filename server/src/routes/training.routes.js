@@ -3,7 +3,7 @@
 const trainingRouter = Router();
 
 trainingRouter.get("/health", (req, res) => {
-  res.json({ module: "training", status: "ok" });
+  res.success({ module: "training" }, "Training module healthy");
 });
 
 export default trainingRouter;

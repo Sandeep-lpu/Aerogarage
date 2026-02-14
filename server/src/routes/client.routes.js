@@ -3,7 +3,7 @@
 const clientRouter = Router();
 
 clientRouter.get("/health", (req, res) => {
-  res.json({ module: "client", status: "ok" });
+  res.success({ module: "client" }, "Client module healthy");
 });
 
 export default clientRouter;

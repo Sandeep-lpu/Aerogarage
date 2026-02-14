@@ -1,1 +1,79 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
+@import "./styles/tokens.css";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--amc-font-body);
+  color: var(--amc-text-body);
+  background: var(--amc-bg-main);
+  line-height: 1.6;
+  text-rendering: geometricPrecision;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  color: var(--amc-text-strong);
+  font-family: var(--amc-font-heading);
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.amc-container {
+  width: min(100% - 2rem, var(--amc-container-max));
+  margin-inline: auto;
+}
+
+@media (max-width: 767px) {
+  .amc-container {
+    width: min(100% - 1.25rem, var(--amc-container-max));
+  }
+}
+
+.amc-fade-in {
+  animation: amcFadeIn var(--amc-dur-slow) var(--amc-ease-standard) both;
+}
+
+.amc-slide-up {
+  animation: amcSlideUp var(--amc-dur-slow) var(--amc-ease-standard) both;
+}
+
+@keyframes amcFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes amcSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

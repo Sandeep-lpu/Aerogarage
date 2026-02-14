@@ -1,0 +1,92 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+:root {
+  color-scheme: light;
+
+  /* Brand colors */
+  --amc-primary-950: #07172a;
+  --amc-primary-900: #0b1f36;
+  --amc-primary-800: #133252;
+  --amc-steel-900: #1f2937;
+  --amc-steel-700: #475569;
+  --amc-steel-500: #64748b;
+  --amc-steel-200: #cbd5e1;
+  --amc-steel-100: #e2e8f0;
+  --amc-steel-50: #f8fafc;
+  --amc-accent-600: #0070f3;
+  --amc-accent-500: #2185ff;
+  --amc-accent-400: #5ba7ff;
+
+  --amc-bg-main: #f8fafc;
+  --amc-bg-surface: #ffffff;
+  --amc-bg-navy: #0b1f36;
+  --amc-text-strong: #0f172a;
+  --amc-text-body: #334155;
+  --amc-text-muted: #64748b;
+  --amc-border: #dbe4ee;
+
+  /* Typography */
+  --amc-font-heading: "Space Grotesk", "Segoe UI", sans-serif;
+  --amc-font-body: "Inter", "Segoe UI", sans-serif;
+
+  --amc-text-xs: 0.75rem;
+  --amc-text-sm: 0.875rem;
+  --amc-text-md: 1rem;
+  --amc-text-lg: 1.125rem;
+  --amc-text-xl: 1.25rem;
+  --amc-text-2xl: 1.5rem;
+  --amc-text-3xl: 1.875rem;
+  --amc-text-4xl: 2.25rem;
+
+  /* 8px spacing scale */
+  --amc-space-1: 0.5rem;
+  --amc-space-2: 1rem;
+  --amc-space-3: 1.5rem;
+  --amc-space-4: 2rem;
+  --amc-space-5: 2.5rem;
+  --amc-space-6: 3rem;
+  --amc-space-8: 4rem;
+
+  /* Radius */
+  --amc-radius-sm: 0.5rem;
+  --amc-radius-md: 0.75rem;
+  --amc-radius-lg: 1rem;
+  --amc-radius-xl: 1.25rem;
+
+  /* Shadow */
+  --amc-shadow-sm: 0 1px 2px rgba(11, 31, 54, 0.08);
+  --amc-shadow-md: 0 8px 20px rgba(11, 31, 54, 0.1);
+  --amc-shadow-lg: 0 14px 36px rgba(11, 31, 54, 0.14);
+
+  /* Layout */
+  --amc-container-max: 1280px;
+
+  /* Z-index */
+  --amc-z-header: 100;
+  --amc-z-modal: 500;
+  --amc-z-toast: 700;
+
+  /* Motion */
+  --amc-dur-fast: 160ms;
+  --amc-dur-base: 260ms;
+  --amc-dur-slow: 420ms;
+  --amc-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Gradients */
+  --amc-gradient-hero: linear-gradient(135deg, #0b1f36 0%, #133252 55%, #0f3f77 100%);
+  --amc-gradient-surface: linear-gradient(160deg, #ffffff 0%, #f1f5f9 100%);
+}
+
+[data-theme="ops-dark"] {
+  color-scheme: dark;
+  --amc-bg-main: #07172a;
+  --amc-bg-surface: #0d223a;
+  --amc-bg-navy: #020b16;
+  --amc-text-strong: #e5edf7;
+  --amc-text-body: #bfd1e6;
+  --amc-text-muted: #8fa4bc;
+  --amc-border: #1f3b5c;
+  --amc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --amc-shadow-md: 0 8px 20px rgba(0, 0, 0, 0.32);
+  --amc-shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.36);
+}

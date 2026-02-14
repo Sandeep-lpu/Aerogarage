@@ -1,8 +1,120 @@
-﻿export default function ServicesPage() {
+﻿import { useEffect, useState } from "react";
+import Link from "../../../app/router/Link";
+import { Badge, Button, Card, Section, Table, TextBlock, Title } from "../../../components/ui";
+import MediaStage from "../components/media/MediaStage";
+import { serviceComparison } from "../content/servicesCatalog";
+import { fetchServicesContent, parseApiError } from "../../../services/api/publicApi";
+
+const processFramework = [
+  "Discovery and scope definition with airline/airport stakeholders",
+  "Resource and compliance planning with operational risk assessment",
+  "Execution with QA checkpoints and live escalation pathways",
+  "Performance reporting and continuous optimization cycles",
+];
+
+export default function ServicesPage() {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function load() {
+      try {
+        const data = await fetchServicesContent();
+        if (!mounted) return;
+        setServices(data?.data?.services || []);
+      } catch (error) {
+        if (!mounted) return;
+        const parsed = parseApiError(error);
+        setErrorMessage(parsed.message || "Failed to load services content");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
-    <section>
-      <h2 className="text-2xl font-bold">Services</h2>
-      <p className="mt-3 text-slate-600">Service catalog page structure is ready for aircraft cleaning, PBB, transportation, line maintenance, security, and repair shop.</p>
-    </section>
+    <>
+      <Section className="bg-[var(--amc-gradient-hero)] text-white">
+        <Badge className="bg-blue-100/20 text-blue-100">Operational Portfolio</Badge>
+        <Title as="h1" className="mt-4 max-w-4xl text-4xl text-white md:text-5xl">
+          Integrated Aviation Services for Enterprise Operations
+        </Title>
+        <TextBlock className="mt-5 max-w-3xl text-blue-100">
+          AMC provides structured service programs across cabin operations, technical maintenance, security, and infrastructure reliability.
+        </TextBlock>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button as={Link} to="/contact">Request Service Proposal</Button>
+          <Button
+            as={Link}
+            to="/contact"
+            variant="secondary"
+            className="border-white text-white hover:bg-white/10"
+          >
+            Book Operations Meeting
+          </Button>
+        </div>
+      </Section>
+
+      <Section title="Service Explainer Visual" subtitle="A controlled 3D stage to communicate service system thinking without harming page performance.">
+        <MediaStage
+          variant="service"
+          title="Service Architecture Explainer"
+          description="This block can later host 3D operational workflow models and asset overlays for enterprise presentations."
+        />
+      </Section>
+
+      <Section title="Service Hub" subtitle="Select a service lane to view detailed scope, process, and conversion path.">
+        {loading ? <TextBlock>Loading services...</TextBlock> : null}
+        {errorMessage ? <TextBlock className="text-rose-700">{errorMessage}</TextBlock> : null}
+
+        {!loading && !errorMessage ? (
+          <div className="grid gap-6 md:grid-cols-2">
+            {services.map((service) => (
+              <Card key={service.slug} className="flex h-full flex-col">
+                <p className="text-sm font-medium text-[var(--amc-accent-600)]">{service.category}</p>
+                <h3 className="mt-2 text-2xl">{service.name}</h3>
+                <TextBlock className="mt-3 flex-1">{service.summary}</TextBlock>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Button as={Link} to={`/services/${service.slug}`}>View Details</Button>
+                  <Button as={Link} to="/contact" variant="secondary">Contact Team</Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : null}
+      </Section>
+
+      <Section className="bg-[var(--amc-gradient-surface)]" title="Capability Comparison" subtitle="Quick operational comparison for enterprise decision-makers.">
+        <Table
+          columns={[
+            { key: "metric", label: "Metric" },
+            { key: "aircraftCleaning", label: "Aircraft Cleaning" },
+            { key: "pbb", label: "PBB Ops" },
+            { key: "line", label: "Line Maintenance" },
+            { key: "security", label: "Security" },
+          ]}
+          data={serviceComparison}
+        />
+      </Section>
+
+      <Section title="AMC Delivery Framework" subtitle="The process model used across all service engagements.">
+        <div className="grid gap-4 md:grid-cols-2">
+          {processFramework.map((step, index) => (
+            <Card key={step}>
+              <p className="text-sm font-semibold text-[var(--amc-accent-600)]">Phase {index + 1}</p>
+              <TextBlock className="mt-2">{step}</TextBlock>
+            </Card>
+          ))}
+        </div>
+      </Section>
+    </>
   );
 }

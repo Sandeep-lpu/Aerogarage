@@ -6,7 +6,15 @@ import AdminLayout from "../../layouts/AdminLayout";
 import HomePage from "../../modules/public/pages/HomePage";
 import AboutPage from "../../modules/public/pages/AboutPage";
 import ServicesPage from "../../modules/public/pages/ServicesPage";
+import TrainingPage from "../../modules/public/pages/TrainingPage";
+import CareersPage from "../../modules/public/pages/CareersPage";
 import ContactPage from "../../modules/public/pages/ContactPage";
+import AircraftCleaningPage from "../../modules/public/pages/ServiceAircraftCleaningPage";
+import PbbOperationsPage from "../../modules/public/pages/ServicePbbOperationsPage";
+import SurfaceTransportationPage from "../../modules/public/pages/ServiceSurfaceTransportationPage";
+import LineMaintenancePage from "../../modules/public/pages/ServiceLineMaintenancePage";
+import AircraftSecurityPage from "../../modules/public/pages/ServiceAircraftSecurityPage";
+import RepairShopPage from "../../modules/public/pages/ServiceRepairShopPage";
 import ClientLoginPage from "../../modules/client/pages/LoginPage";
 import ClientDashboardPage from "../../modules/client/pages/DashboardPage";
 import TrainingLoginPage from "../../modules/training/pages/LoginPage";
@@ -19,6 +27,14 @@ const ROUTES = [
   { path: "/", layout: PublicLayout, page: HomePage },
   { path: "/about", layout: PublicLayout, page: AboutPage },
   { path: "/services", layout: PublicLayout, page: ServicesPage },
+  { path: "/services/aircraft-cleaning", layout: PublicLayout, page: AircraftCleaningPage },
+  { path: "/services/pbb-operations-maintenance", layout: PublicLayout, page: PbbOperationsPage },
+  { path: "/services/surface-transportation", layout: PublicLayout, page: SurfaceTransportationPage },
+  { path: "/services/line-maintenance", layout: PublicLayout, page: LineMaintenancePage },
+  { path: "/services/aircraft-security", layout: PublicLayout, page: AircraftSecurityPage },
+  { path: "/services/repair-shop", layout: PublicLayout, page: RepairShopPage },
+  { path: "/training", layout: PublicLayout, page: TrainingPage },
+  { path: "/careers", layout: PublicLayout, page: CareersPage },
   { path: "/contact", layout: PublicLayout, page: ContactPage },
   { path: "/client/login", layout: ClientLayout, page: ClientLoginPage },
   { path: "/client/dashboard", layout: ClientLayout, page: ClientDashboardPage },

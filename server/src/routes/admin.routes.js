@@ -3,7 +3,7 @@
 const adminRouter = Router();
 
 adminRouter.get("/health", (req, res) => {
-  res.json({ module: "admin", status: "ok" });
+  res.success({ module: "admin" }, "Admin module healthy");
 });
 
 export default adminRouter;

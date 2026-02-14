@@ -1,6 +1,6 @@
 ﻿import { useRouter } from "./routerStore";
 
-export default function Link({ to, className = "", children }) {
+export default function Link({ to, className = "", children, onClick, ...props }) {
   const { navigate } = useRouter();
 
   return (
@@ -9,8 +9,10 @@ export default function Link({ to, className = "", children }) {
       className={className}
       onClick={(event) => {
         event.preventDefault();
+        if (onClick) onClick(event);
         navigate(to);
       }}
+      {...props}
     >
       {children}
     </a>
