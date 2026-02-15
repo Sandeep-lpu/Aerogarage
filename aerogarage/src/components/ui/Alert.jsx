@@ -9,7 +9,11 @@ const variants = {
 
 export default function Alert({ variant = "info", title, children, className }) {
   return (
-    <div className={cn("rounded-[var(--amc-radius-md)] border p-4", variants[variant], className)}>
+    <div
+      role="status"
+      aria-live="polite"
+      className={cn("rounded-[var(--amc-radius-md)] border p-4", variants[variant], className)}
+    >
       {title ? <h4 className="text-sm font-semibold">{title}</h4> : null}
       {children ? <p className="mt-1 text-sm">{children}</p> : null}
     </div>

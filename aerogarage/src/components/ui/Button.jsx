@@ -24,6 +24,7 @@ export default function Button({
   ...props
 }) {
   const Component = as || "button";
+  const buttonProps = Component === "button" ? { type: "button", ...props } : props;
 
   return (
     <Component
@@ -33,7 +34,7 @@ export default function Button({
         sizes[size],
         className,
       )}
-      {...props}
+      {...buttonProps}
     >
       {children}
     </Component>

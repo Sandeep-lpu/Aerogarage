@@ -1,4 +1,4 @@
-﻿const services = [
+const services = [
   {
     slug: "aircraft-cleaning",
     name: "Aircraft Cleaning Services",
@@ -65,5 +65,25 @@ export function getServicesContent() {
 }
 
 export function getTrainingContent() {
+  return training;
+}
+
+export function updateServiceContent(slug, updates) {
+  const item = services.find((entry) => entry.slug === slug);
+  if (!item) return null;
+
+  if (typeof updates.name === "string") item.name = updates.name;
+  if (typeof updates.category === "string") item.category = updates.category;
+  if (typeof updates.summary === "string") item.summary = updates.summary;
+
+  return item;
+}
+
+export function updateTrainingContent(updates) {
+  if (typeof updates.organization === "string") training.organization = updates.organization;
+  if (typeof updates.affiliation === "string") training.affiliation = updates.affiliation;
+  if (Array.isArray(updates.modules)) training.modules = updates.modules;
+  if (Array.isArray(updates.pathways)) training.pathways = updates.pathways;
+
   return training;
 }

@@ -47,6 +47,33 @@ function statusBadgeVariant(status) {
   return "warning";
 }
 
+function priorityRank(priority) {
+  const p = String(priority || "").toLowerCase();
+  if (p === "high") return 3;
+  if (p === "medium") return 2;
+  return 1;
+}
+
+function downloadDocumentFile(doc) {
+  const fileName = `${doc.id || "document"}.txt`;
+  const content = [
+    `Document ID: ${doc.id || ""}`,
+    `Title: ${doc.title || ""}`,
+    `Type: ${doc.type || ""}`,
+    `Updated: ${new Date(doc.updatedAt).toLocaleString()}`,
+  ].join("\n");
+
+  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = fileName;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+  URL.revokeObjectURL(url);
+}
+
 export default function ClientDashboardPage() {
   const { authState, logout, withAuthRequest } = useAuth();
   const [requests, setRequests] = useState([]);
@@ -59,6 +86,15 @@ export default function ClientDashboardPage() {
   const [requestTouched, setRequestTouched] = useState({});
   const [requestMessage, setRequestMessage] = useState("");
   const [requestLoading, setRequestLoading] = useState(false);
+  const [requestSearch, setRequestSearch] = useState("");
+  const [requestStatus, setRequestStatus] = useState("all");
+  const [requestPriority, setRequestPriority] = useState("all");
+  const [requestSortBy, setRequestSortBy] = useState("createdAt");
+  const [requestSortDir, setRequestSortDir] = useState("desc");
+
+  const [documentSearch, setDocumentSearch] = useState("");
+  const [documentType, setDocumentType] = useState("all");
+  const [documentSortBy, setDocumentSortBy] = useState("updatedAt");
 
   const [profileForm, setProfileForm] = useState({ fullName: "" });
   const [profileMessage, setProfileMessage] = useState("");
@@ -140,18 +176,75 @@ export default function ClientDashboardPage() {
     }
   };
 
-  const requestRows = requests.map((request) => ({
+  const filteredSortedRequests = useMemo(() => {
+    const query = requestSearch.trim().toLowerCase();
+
+    const filtered = requests.filter((request) => {
+      const matchesQuery =
+        !query ||
+        String(request.title || "").toLowerCase().includes(query) ||
+        String(request.serviceType || "").toLowerCase().includes(query) ||
+        String(request.status || "").toLowerCase().includes(query);
+      const matchesStatus = requestStatus === "all" || String(request.status || "").toLowerCase() === requestStatus;
+      const matchesPriority = requestPriority === "all" || String(request.priority || "").toLowerCase() === requestPriority;
+      return matchesQuery && matchesStatus && matchesPriority;
+    });
+
+    filtered.sort((a, b) => {
+      let compare = 0;
+
+      if (requestSortBy === "priority") {
+        compare = priorityRank(a.priority) - priorityRank(b.priority);
+      } else if (requestSortBy === "title") {
+        compare = String(a.title || "").localeCompare(String(b.title || ""));
+      } else {
+        compare = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      }
+
+      return requestSortDir === "asc" ? compare : -compare;
+    });
+
+    return filtered;
+  }, [requestPriority, requestSearch, requestSortBy, requestSortDir, requestStatus, requests]);
+
+  const filteredSortedDocuments = useMemo(() => {
+    const query = documentSearch.trim().toLowerCase();
+    const filtered = documents.filter((doc) => {
+      const matchesQuery =
+        !query ||
+        String(doc.title || "").toLowerCase().includes(query) ||
+        String(doc.id || "").toLowerCase().includes(query);
+      const matchesType = documentType === "all" || String(doc.type || "").toLowerCase() === documentType;
+      return matchesQuery && matchesType;
+    });
+
+    filtered.sort((a, b) => {
+      if (documentSortBy === "title") {
+        return String(a.title || "").localeCompare(String(b.title || ""));
+      }
+      return new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime();
+    });
+
+    return filtered;
+  }, [documentSearch, documentSortBy, documentType, documents]);
+
+  const requestRows = filteredSortedRequests.map((request) => ({
     title: request.title,
     serviceType: request.serviceType,
     priority: String(request.priority || "").toUpperCase(),
     status: <Badge variant={statusBadgeVariant(request.status)}>{request.status}</Badge>,
   }));
 
-  const documentRows = documents.map((doc) => ({
+  const documentRows = filteredSortedDocuments.map((doc) => ({
     id: doc.id,
     title: doc.title,
     type: doc.type,
     updatedAt: new Date(doc.updatedAt).toLocaleDateString(),
+    actions: (
+      <Button type="button" variant="secondary" className="h-9" onClick={() => downloadDocumentFile(doc)}>
+        Download
+      </Button>
+    ),
   }));
 
   const tabs = [
@@ -205,6 +298,32 @@ export default function ClientDashboardPage() {
           <Card>
             <Title as="h3" className="text-xl">Request Tracking</Title>
             <TextBlock className="mt-2">Monitor submitted request statuses and priorities.</TextBlock>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+              <Input label="Search" placeholder="Title, service, status..." value={requestSearch} onChange={(e) => setRequestSearch(e.target.value)} />
+              <Select label="Status" value={requestStatus} onChange={(e) => setRequestStatus(e.target.value)}>
+                <option value="all">All</option>
+                <option value="submitted">Submitted</option>
+                <option value="in progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </Select>
+              <Select label="Priority" value={requestPriority} onChange={(e) => setRequestPriority(e.target.value)}>
+                <option value="all">All</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </Select>
+              <Select label="Sort By" value={requestSortBy} onChange={(e) => setRequestSortBy(e.target.value)}>
+                <option value="createdAt">Created Date</option>
+                <option value="priority">Priority</option>
+                <option value="title">Title</option>
+              </Select>
+              <Select label="Sort Direction" value={requestSortDir} onChange={(e) => setRequestSortDir(e.target.value)}>
+                <option value="desc">Descending</option>
+                <option value="asc">Ascending</option>
+              </Select>
+            </div>
+
             <Table
               className="mt-4"
               columns={[
@@ -226,6 +345,21 @@ export default function ClientDashboardPage() {
         <Card>
           <Title as="h3" className="text-xl">Documents and Reports</Title>
           <TextBlock className="mt-2">Access client-shared documents and operational reports.</TextBlock>
+
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
+            <Input label="Search" placeholder="Document ID or title..." value={documentSearch} onChange={(e) => setDocumentSearch(e.target.value)} />
+            <Select label="Type" value={documentType} onChange={(e) => setDocumentType(e.target.value)}>
+              <option value="all">All</option>
+              <option value="pdf">PDF</option>
+              <option value="xlsx">XLSX</option>
+              <option value="docx">DOCX</option>
+            </Select>
+            <Select label="Sort By" value={documentSortBy} onChange={(e) => setDocumentSortBy(e.target.value)}>
+              <option value="updatedAt">Updated Date</option>
+              <option value="title">Title</option>
+            </Select>
+          </div>
+
           <Table
             className="mt-4"
             columns={[
@@ -233,6 +367,7 @@ export default function ClientDashboardPage() {
               { key: "title", label: "Title" },
               { key: "type", label: "Type" },
               { key: "updatedAt", label: "Updated" },
+              { key: "actions", label: "Action" },
             ]}
             data={documentRows}
           />
