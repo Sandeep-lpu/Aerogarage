@@ -55,6 +55,7 @@ export default function ContactPage() {
   const onChange = (field) => (event) => {
     setForm((prev) => ({ ...prev, [field]: event.target.value }));
     setApiFieldErrors((prev) => ({ ...prev, [field]: "" }));
+    if (apiMessage) setApiMessage("");
   };
 
   const onBlur = (field) => () => setTouched((prev) => ({ ...prev, [field]: true }));
@@ -70,7 +71,11 @@ export default function ContactPage() {
     };
     setTouched(nextTouched);
 
-    if (Object.keys(localErrors).length > 0) return;
+    if (Object.keys(localErrors).length > 0) {
+      setSubmitted(false);
+      setApiMessage("Please complete all required fields before submitting.");
+      return;
+    }
 
     setIsSubmitting(true);
     setApiMessage("");

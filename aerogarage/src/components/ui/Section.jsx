@@ -7,9 +7,10 @@ export default function Section({
   title,
   subtitle,
   children,
+  ...props
 }) {
   return (
-    <section className={cn("py-16 md:py-20", className)}>
+    <section className={cn("py-16 md:py-20", className)} {...props}>
       <Container className={containerClassName}>
         {(title || subtitle) && (
           <header className="mb-8">

@@ -3,6 +3,7 @@ import Link from "../../app/router/Link";
 import { useRouter } from "../../app/router/routerStore";
 import { Button } from "../../components/ui";
 import { cn } from "../../utils/cn";
+import BrandLogo from "./BrandLogo";
 import { mainNav, servicesMegaItems } from "./navConfig";
 
 function NavItem({ to, label, activePath, onNavigate }) {
@@ -80,9 +81,7 @@ export default function PublicHeader() {
       }}
     >
       <div className="amc-container flex h-[4.5rem] items-center justify-between">
-        <Link to="/" className="text-lg font-bold text-[var(--amc-primary-900)]" aria-label="Aerogarage home">
-          Aerogarage
-        </Link>
+        <BrandLogo />
 
         <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
           {mainNav.map((item) => (

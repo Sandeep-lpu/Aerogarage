@@ -1,11 +1,13 @@
-﻿import Link from "../../app/router/Link";
+import Link from "../../app/router/Link";
+import BrandLogo from "./BrandLogo";
 
 export default function PublicFooter() {
   return (
     <footer className="border-t border-[var(--amc-border)] bg-[var(--amc-primary-900)] text-slate-200">
       <div className="amc-container grid gap-8 py-12 md:grid-cols-4">
         <div>
-          <p className="text-lg font-semibold text-white">Aerogarage Company</p>
+          <BrandLogo dark className="w-fit" />
+          <p className="mt-3 text-lg font-semibold text-white">Aerogarage Company</p>
           <p className="mt-3 text-sm text-slate-300">
             Safety-driven aviation services partner aligned with Saudi Vision 2030.
           </p>

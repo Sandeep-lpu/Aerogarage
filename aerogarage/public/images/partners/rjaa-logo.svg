@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Royal Jordanian Air Academy</title>
+  <desc id="desc">RJAA placeholder mark for training partner section.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f2b46"/>
+      <stop offset="100%" stop-color="#2f5bff"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="144" height="144" rx="24" fill="url(#bg)"/>
+  <circle cx="80" cy="64" r="24" fill="none" stroke="#ffffff" stroke-width="6"/>
+  <path d="M42 96h76" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+  <text x="80" y="124" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">RJAA</text>
+</svg>
