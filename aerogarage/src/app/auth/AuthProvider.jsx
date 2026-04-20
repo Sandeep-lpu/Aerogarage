@@ -6,6 +6,7 @@ import {
 } from "../../services/auth/authApi";
 import { clearAuthState, loadAuthState, saveAuthState } from "../../services/auth/authStorage";
 import { parseApiError } from "../../services/api/publicApi";
+import { registerTokenAccessor } from "../../services/api/httpClient";
 import { AuthContext } from "./authContext";
 
 function getTokenExpiryMs(token) {
@@ -99,7 +100,31 @@ export default function AuthProvider({ children }) {
     }
   }, [clearSession]);
 
+  // Wire up Axios interceptors: give the httpClient access to the latest in-memory
+  // token and the silent-refresh callback so it can auto-inject Authorization headers
+  // and retry requests on 401 without manual token passing in every API module.
   useEffect(() => {
+    registerTokenAccessor(
+      // Token getter — reads current access token from the ref (no stale closure)
+      () => authRef.current?.accessToken ?? null,
+      // onUnauthorized — triggers a silent refresh and returns the new access token
+      async () => {
+        const result = await refreshSession();
+        return result.ok ? result.data?.accessToken : null;
+      },
+    );
+  }, [refreshSession]);
+
+  // Hydration guard — only runs once on mount to avoid an infinite refresh loop.
+  // If accessToken is still valid we mark the session ready immediately.
+  // If it's expired we attempt a silent refresh, then mark ready regardless.
+  const hasHydrated = useRef(false);
+
+  useEffect(() => {
+    // Skip subsequent renders \u2014 hydration should only happen once on mount.
+    if (hasHydrated.current) return;
+    hasHydrated.current = true;
+
     let mounted = true;
 
     async function hydrateSession() {
@@ -114,6 +139,7 @@ export default function AuthProvider({ children }) {
         return;
       }
 
+      // Token is expired \u2014 attempt silent refresh using the stored refresh token
       const refreshed = await refreshSession(snapshot.refreshToken);
       if (!mounted) return;
       if (!refreshed.ok) {
@@ -128,7 +154,8 @@ export default function AuthProvider({ children }) {
     return () => {
       mounted = false;
     };
-  }, [authState?.accessToken, authState?.refreshToken, clearSession, refreshSession]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty array: intentional \u2014 mount-only hydration to prevent infinite loop
 
   useEffect(() => {
     const snapshot = authRef.current;

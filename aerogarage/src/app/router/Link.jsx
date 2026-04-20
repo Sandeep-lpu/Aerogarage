@@ -1,4 +1,4 @@
-﻿import { useRouter } from "./routerStore";
+import { useRouter } from "./routerStore";
 
 export default function Link({ to, className = "", children, onClick, ...props }) {
   const { navigate } = useRouter();
