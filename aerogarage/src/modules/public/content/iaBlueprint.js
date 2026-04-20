@@ -1,4 +1,4 @@
-﻿export const publicPageBlueprint = {
+export const publicPageBlueprint = {
   home: {
     route: "/",
     pageTitle: "Home",
