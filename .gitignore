@@ -1,4 +1,4 @@
-﻿# Global ignores for fullstack workspace
+# Global ignores for fullstack workspace
 
 # Dependencies
 node_modules/
@@ -32,6 +32,18 @@ pnpm-debug.log*
 
 # Reports / generated artifacts
 lighthouse-*.json
+images_list.json
+lint-errors.json
+lint-errors.txt
+build_log.txt
+
+# Temp / scratch scripts
+tempscript*.js
+tempscript*.mjs
+lt_log.txt
+
+# Misc generated links/exports
+link.txt
 
 # OS / Editor
 .DS_Store
