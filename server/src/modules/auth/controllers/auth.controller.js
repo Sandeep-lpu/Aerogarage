@@ -1,9 +1,11 @@
-﻿import {
+import {
   loginUser,
   logoutUser,
   refreshAuthToken,
   registerUser,
   verifyAccessToken,
+  verifyEmailToken,
+  resendVerificationEmail,
 } from "../services/auth.service.js";
 
 export async function registerController(req, res, next) {
@@ -42,26 +44,29 @@ export async function logoutController(req, res, next) {
   }
 }
 
-export async function meController(req, res, next) {
+export async function meController(req, res) {
+  // requireAuth middleware has already validated the token and populated req.user
+  return res.success(
+    { id: req.user.id, email: req.user.email, role: req.user.role },
+    "Authenticated user",
+  );
+}
+
+export async function verifyEmailController(req, res, next) {
   try {
-    const authHeader = req.headers.authorization || "";
-    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-
-    if (!token) {
-      return res.fail("Authorization token required", 401);
-    }
-
-    const decoded = verifyAccessToken(token, req.app.locals.env);
-    return res.success(
-      {
-        id: decoded.sub,
-        email: decoded.email,
-        role: decoded.role,
-      },
-      "Authenticated user",
-    );
+    const result = await verifyEmailToken(req.query.token);
+    return res.success(result, result.message);
   } catch (error) {
-    error.statusCode = 401;
+    return next(error);
+  }
+}
+
+export async function resendVerificationController(req, res, next) {
+  try {
+    // requireAuth ensures req.user is set
+    await resendVerificationEmail(req.user.id);
+    return res.success(null, "Verification email resent");
+  } catch (error) {
     return next(error);
   }
 }
