@@ -1,4 +1,4 @@
-﻿import mongoose from "mongoose";
+import mongoose from "mongoose";
 import { ALL_ROLES } from "../constants/roles.js";
 
 const userSchema = new mongoose.Schema(
@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema(
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ALL_ROLES, default: "client" },
     isActive: { type: Boolean, default: true },
+    emailVerified: { type: Boolean, default: false, index: true },
+    department: { type: String, trim: true, maxlength: 120 },
+    designation: { type: String, trim: true, maxlength: 120 },
+    shift: { type: String, trim: true, maxlength: 80 },
   },
   { timestamps: true },
 );
