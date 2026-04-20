@@ -81,57 +81,90 @@ export default function ClientRegisterPage() {
   };
 
   return (
-    <Section>
-      <Card className="mx-auto max-w-xl">
-        <Badge variant="info">Client Portal</Badge>
-        <Title as="h2" className="mt-3 text-2xl">Create Client Account</Title>
-        <TextBlock className="mt-2">Register your airline or airport representative account.</TextBlock>
+    <div className="w-full h-full flex flex-col items-center justify-center p-6 overflow-y-auto z-10 relative">
+      <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
 
-        <form className="mt-5 grid gap-4" onSubmit={onSubmit}>
-          <Input
-            label="Full Name"
-            value={form.fullName}
-            onChange={onChange("fullName")}
-            error={touched.fullName ? errors.fullName : ""}
-            required
-          />
-          <Input
-            label="Email"
-            type="email"
-            value={form.email}
-            onChange={onChange("email")}
-            error={touched.email ? errors.email : ""}
-            required
-          />
-          <Input
-            label="Password"
-            type="password"
-            value={form.password}
-            onChange={onChange("password")}
-            error={touched.password ? errors.password : ""}
-            required
-          />
-          <Input
-            label="Confirm Password"
-            type="password"
-            value={form.confirmPassword}
-            onChange={onChange("confirmPassword")}
-            error={touched.confirmPassword ? errors.confirmPassword : ""}
-            required
-          />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-violet-500/5 blur-[100px] rounded-full pointer-events-none -z-10" />
 
-          <div className="flex flex-wrap gap-3">
-            <Button type="submit" disabled={isSubmitting}>{isSubmitting ? "Registering..." : "Register"}</Button>
-            <Button as={Link} to="/client/login" variant="secondary">Back to Login</Button>
+        <Card className="w-full border border-white/10 bg-slate-900/60 p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] backdrop-blur-xl rounded-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-400/30 to-transparent" />
+
+          <div className="flex justify-center mb-5">
+            <Badge variant="info" className="bg-violet-500/10 text-violet-400 border-violet-500/20 py-1.5 px-4">Client Portal</Badge>
           </div>
-        </form>
 
-        {message ? (
-          <Alert className="mt-4" variant={ok ? "success" : "danger"} title={ok ? "Registration Complete" : "Registration Failed"}>
-            {message}
-          </Alert>
-        ) : null}
-      </Card>
-    </Section>
+          <Title as="h2" className="text-2xl font-bold text-center text-white mb-1">Create Client Account</Title>
+          <TextBlock className="text-center text-slate-400 mb-6 text-sm">Register your airline or airport representative account.</TextBlock>
+
+          <form className="grid gap-4 relative z-10" onSubmit={onSubmit}>
+            <Input
+              label="Full Name"
+              value={form.fullName}
+              onChange={onChange("fullName")}
+              error={touched.fullName ? errors.fullName : ""}
+              required
+              placeholder="Your full name"
+              className="bg-slate-950/50 border-white/10 text-white"
+            />
+            <Input
+              label="Business Email"
+              type="email"
+              value={form.email}
+              onChange={onChange("email")}
+              error={touched.email ? errors.email : ""}
+              required
+              placeholder="client@company.com"
+              className="bg-slate-950/50 border-white/10 text-white"
+            />
+            <Input
+              label="Password"
+              type="password"
+              value={form.password}
+              onChange={onChange("password")}
+              error={touched.password ? errors.password : ""}
+              required
+              placeholder="Min 8 chars with letters & numbers"
+              className="bg-slate-950/50 border-white/10 text-white"
+            />
+            <Input
+              label="Confirm Password"
+              type="password"
+              value={form.confirmPassword}
+              onChange={onChange("confirmPassword")}
+              error={touched.confirmPassword ? errors.confirmPassword : ""}
+              required
+              placeholder="••••••••"
+              className="bg-slate-950/50 border-white/10 text-white"
+            />
+
+            <div className="flex gap-3 mt-2">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 h-11 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border-0 shadow-[0_0_20px_rgba(139,92,246,0.2)] text-white font-bold tracking-wide transition-all"
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Registering...
+                  </span>
+                ) : "Create Account"}
+              </Button>
+              <Button as={Link} to="/client/login" variant="secondary" className="h-11 bg-slate-800 hover:bg-slate-700 border-white/10 text-slate-200">
+                Back to Login
+              </Button>
+            </div>
+          </form>
+
+          {message && (
+            <div className={`mt-5 p-4 rounded-lg border flex items-start gap-3 ${ok ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300" : "bg-red-500/10 border-red-500/20 text-red-300"}`}>
+              <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span className="text-sm font-medium">{message}</span>
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
   );
 }
+

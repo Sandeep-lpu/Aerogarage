@@ -41,20 +41,66 @@ export default function ClientLoginPage() {
   };
 
   return (
-    <Section>
-      <Card className="mx-auto max-w-xl">
-        <Badge variant="info">Client Portal</Badge>
-        <Title as="h2" className="mt-3 text-2xl">Client Login</Title>
-        <form className="mt-5 grid gap-4" onSubmit={onSubmit}>
-          <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <div className="flex flex-wrap gap-3">
-            <Button type="submit" disabled={authLoading}>{authLoading ? "Signing in..." : "Sign In"}</Button>
-            <Button as={Link} to="/client/register" variant="secondary">Register</Button>
+    <div className="w-full h-full flex flex-col items-center justify-center p-6 overflow-y-auto z-10 relative">
+      <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
+        
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-violet-500/5 blur-[100px] rounded-full pointer-events-none -z-10" />
+
+        <Card className="w-full amc-glass-card border border-white/10 bg-slate-900/60 p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] backdrop-blur-xl rounded-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-400/30 to-transparent" />
+          
+          <div className="flex justify-center mb-6">
+            <Badge variant="info" className="bg-violet-500/10 text-violet-400 border-violet-500/20 shadow-[0_0_15px_rgba(139,92,246,0.1)] py-1.5 px-4">Client Authentication</Badge>
           </div>
-        </form>
-        {message ? <TextBlock className={`mt-4 ${ok ? "text-emerald-700" : "text-rose-700"}`}>{message}</TextBlock> : null}
-      </Card>
-    </Section>
+          
+          <Title as="h2" className="text-3xl font-bold text-center text-white mb-2">Client Portal</Title>
+          <TextBlock className="text-center text-slate-400 mb-8 text-sm">Sign in to manage service requests and account operations.</TextBlock>
+          
+          <form className="grid gap-5 relative z-10" onSubmit={onSubmit}>
+            <Input 
+              label="Client Email" 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+              placeholder="client@company.com"
+              className="bg-slate-950/50 border-white/10 text-white placeholder-slate-600"
+            />
+            <Input 
+              label="Passkey" 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+              placeholder="••••••••"
+              className="bg-slate-950/50 border-white/10 text-white placeholder-slate-600"
+            />
+            <div className="flex gap-3 mt-4">
+              <Button 
+                type="submit" 
+                disabled={authLoading}
+                className="flex-1 h-12 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border-0 shadow-[0_0_20px_rgba(139,92,246,0.2)] hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] text-white font-bold tracking-wide transition-all"
+              >
+                {authLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Verifying...
+                  </span>
+                ) : "Authenticate Session"}
+              </Button>
+              <Button as={Link} to="/client/register" variant="secondary" className="h-12 bg-slate-800 hover:bg-slate-700 border-white/10 text-slate-200">
+                Register
+              </Button>
+            </div>
+          </form>
+          {message && (
+            <div className={`mt-6 p-4 rounded-lg border flex items-start gap-3 ${ok ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300" : "bg-red-500/10 border-red-500/20 text-red-300"}`}>
+              <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span className="text-sm font-medium">{message}</span>
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
   );
 }
