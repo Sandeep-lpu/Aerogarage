@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Badge, Button, Card, Input, Section, Select, Table, TextBlock, Title } from "../../../components/ui";
 import {
   mapValidationErrors,
@@ -14,10 +14,18 @@ const valueProps = [
 ];
 
 const openings = [
-  { role: "Aircraft Engineer", location: "Riyadh", team: "Line Maintenance", type: "Full-time" },
-  { role: "PBB Technician", location: "Riyadh", team: "Infrastructure", type: "Full-time" },
-  { role: "Security Supervisor", location: "Riyadh", team: "Aircraft Security", type: "Full-time" },
-  { role: "Training Coordinator", location: "Riyadh", team: "Training Org", type: "Full-time" },
+  { role: "Aircraft Engineer", location: "Riyadh", team: "Line Maintenance", type: "Full-time", quantity: "00" },
+  { role: "PBB Technician", location: "Riyadh", team: "Infrastructure", type: "Full-time", quantity: "00" },
+  { role: "Security Supervisor", location: "Riyadh", team: "Aircraft Security", type: "Full-time", quantity: "00" },
+  { role: "Training Coordinator", location: "Riyadh", team: "Training Org", type: "Full-time", quantity: "00" },
+];
+
+const availablePositions = [
+  "Aircraft Engineer",
+  "PBB Technician",
+  "Security Supervisor",
+  "Training Coordinator",
+  "Other / Open Application",
 ];
 
 const hiringSteps = [
@@ -120,18 +128,18 @@ export default function CareersPage() {
   };
 
   return (
-    <>
+    <main className="amc-page-bg amc-page-bg-careers">
       <Section className="bg-[var(--amc-gradient-hero)] text-white">
-        <Badge className="bg-blue-100/20 text-blue-100">Careers at AMC</Badge>
+        <Badge className="amc-hero-badge">Careers at AMC</Badge>
         <Title as="h1" className="mt-4 max-w-4xl text-4xl text-white md:text-5xl">
           Build a Career in Safety-Critical Aviation Operations
         </Title>
-        <TextBlock className="mt-5 max-w-3xl text-blue-100">
+        <TextBlock className="amc-hero-lead mt-5 max-w-3xl">
           Join a team focused on operational excellence, regulatory discipline, and national aviation capability building.
         </TextBlock>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button as="a" href="#careers-apply">Apply Now</Button>
-          <Button as="a" href="mailto:careers@aeroamc.com" variant="secondary" className="border-white text-white hover:bg-white/10">
+          <Button as="a" href="mailto:careers@aeroamc.com" variant="secondary" className="amc-hero-secondary-btn">
             Contact Recruitment
           </Button>
         </div>
@@ -152,6 +160,7 @@ export default function CareersPage() {
             { key: "location", label: "Location" },
             { key: "team", label: "Team" },
             { key: "type", label: "Type" },
+            { key: "quantity", label: "Openings" },
           ]}
           data={openings}
         />
@@ -168,8 +177,8 @@ export default function CareersPage() {
             <div className="grid gap-4 md:grid-cols-2">
               <Input label="Phone" value={form.phone} onChange={onChange("phone")} onBlur={onBlur("phone")} error={touched.phone ? mergedErrors.phone : ""} />
               <Select label="Position" value={form.position} onChange={onChange("position")}>
-                {openings.map((item) => (
-                  <option key={item.role} value={item.role}>{item.role}</option>
+                {availablePositions.map((role) => (
+                  <option key={role} value={role}>{role}</option>
                 ))}
               </Select>
             </div>
@@ -183,7 +192,7 @@ export default function CareersPage() {
               <span className="text-sm font-medium text-[var(--amc-text-strong)]">Cover Letter (Optional)</span>
               <textarea
                 rows={5}
-                className="rounded-[var(--amc-radius-md)] border border-[var(--amc-border)] bg-white px-3 py-3 text-sm text-[var(--amc-text-strong)] outline-none transition duration-[var(--amc-dur-fast)] ease-[var(--amc-ease-standard)] focus:border-[var(--amc-accent-500)] focus:ring-2 focus:ring-[var(--amc-accent-400)]/25"
+                className="rounded-[var(--amc-radius-md)] border border-[var(--amc-border)] bg-[var(--amc-bg-field)] px-3 py-3 text-sm text-[var(--amc-text-strong)] outline-none transition duration-[var(--amc-dur-fast)] ease-[var(--amc-ease-standard)] focus:border-[var(--amc-accent-500)] focus:ring-2 focus:ring-[var(--amc-accent-400)]/25"
                 value={form.coverLetter}
                 onChange={onChange("coverLetter")}
                 placeholder="Share your relevant aviation experience and career objective."
@@ -229,6 +238,6 @@ export default function CareersPage() {
           ))}
         </div>
       </Section>
-    </>
+    </main>
   );
 }

@@ -1,8 +1,7 @@
-﻿import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "../../../app/router/Link";
 import { Badge, Button, Card, Section, TextBlock, Title } from "../../../components/ui";
 import { fetchTrainingContent, parseApiError } from "../../../services/api/publicApi";
-import MediaStage from "../components/media/MediaStage";
 
 const trust = [
   "RJAA affiliated training pathway",
@@ -39,32 +38,27 @@ export default function TrainingPage() {
   const modules = training?.modules || [];
 
   return (
-    <>
+    <main className="amc-page-bg amc-page-bg-training">
       <Section className="bg-[var(--amc-gradient-hero)] text-white">
-        <Badge className="bg-blue-100/20 text-blue-100">Training Organization</Badge>
+        <Badge className="amc-hero-badge">Training Organization</Badge>
         <Title as="h1" className="mt-4 max-w-4xl text-4xl text-white md:text-5xl">
           EASA-Aligned Engineer Development in Saudi Arabia
         </Title>
-        <TextBlock className="mt-5 max-w-3xl text-blue-100">
+        <TextBlock className="amc-hero-lead mt-5 max-w-3xl">
           AMC is establishing a specialized aircraft engineer training pathway in Riyadh to build local high-skill maintenance capability for airlines and MRO operations.
         </TextBlock>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button as={Link} to="/contact">Apply for Training Intake</Button>
-          <Button as={Link} to="/training/login" variant="secondary" className="border-white text-white hover:bg-white/10">
+          <Button as={Link} to="/training/login" variant="secondary" className="amc-hero-secondary-btn">
             Student Portal
           </Button>
         </div>
       </Section>
 
-      <Section title="Training Visual Layer" subtitle="A premium but restrained 3D block that reinforces technical training credibility.">
-        <MediaStage
-          variant="training"
-          title="Training Capability Visualization"
-          description="Prepared for future integration of workshop scenes, module diagrams, and course pathway media assets."
-        />
-      </Section>
-
       <Section title="Program Tracks" subtitle="Structured pathways aligned with international licensing frameworks.">
+        <div className="mb-6">
+          <Badge variant="info" className="text-sm px-3 py-1 font-semibold tracking-wide">EASA B1.1 and B2</Badge>
+        </div>
         {loading ? <TextBlock>Loading training pathways...</TextBlock> : null}
         {errorMessage ? (
           <div className="flex items-center gap-3">
@@ -101,6 +95,6 @@ export default function TrainingPage() {
           ))}
         </div>
       </Section>
-    </>
+    </main>
   );
 }
