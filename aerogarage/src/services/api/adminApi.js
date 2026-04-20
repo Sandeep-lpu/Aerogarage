@@ -61,6 +61,15 @@ export async function updateAdminTrainingModule(token, moduleId, payload) {
   return response.data;
 }
 
+export async function enrollAdminTraining(token, payload) {
+  const response = await httpClient.post(
+    "/admin/training/enroll",
+    payload,
+    { headers: authHeader(token) },
+  );
+  return response.data;
+}
+
 export async function fetchAdminPublicContent(token) {
   const response = await httpClient.get("/admin/content/public", {
     headers: authHeader(token),
@@ -83,5 +92,44 @@ export async function updateAdminTrainingContent(token, payload) {
     payload,
     { headers: authHeader(token) },
   );
+  return response.data;
+}
+
+export async function fetchAdminApprovals(token) {
+  const response = await httpClient.get("/admin/approvals", {
+    headers: authHeader(token),
+  });
+  return response.data;
+}
+
+export async function approveAdminWorkItem(token, workItemId, note = "") {
+  const response = await httpClient.patch(
+    `/admin/approvals/${workItemId}/approve`,
+    { note },
+    { headers: authHeader(token) },
+  );
+  return response.data;
+}
+
+export async function rejectAdminWorkItem(token, workItemId, note = "") {
+  const response = await httpClient.patch(
+    `/admin/approvals/${workItemId}/reject`,
+    { note },
+    { headers: authHeader(token) },
+  );
+  return response.data;
+}
+
+export async function fetchAdminAuditLogs(token) {
+  const response = await httpClient.get("/admin/audit-logs", {
+    headers: authHeader(token),
+  });
+  return response.data;
+}
+
+export async function fetchAdminAnalytics(token) {
+  const response = await httpClient.get("/analytics/dashboard", {
+    headers: authHeader(token),
+  });
   return response.data;
 }
