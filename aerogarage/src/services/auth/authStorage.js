@@ -1,4 +1,4 @@
-﻿const STORAGE_KEY = "aerogarage_auth";
+const STORAGE_KEY = "aerogarage_auth";
 
 export function loadAuthState() {
   try {
