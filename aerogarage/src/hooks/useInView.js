@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function useInView(options = { threshold: 0.15 }) {
   const ref = useRef(null);

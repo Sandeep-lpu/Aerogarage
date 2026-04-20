@@ -1,4 +1,4 @@
-﻿import { useRouter } from "../app/router/routerStore";
+import { useRouter } from "../app/router/routerStore";
 import useSeo from "../seo/useSeo";
 import PublicHeader from "./public/PublicHeader";
 import PublicFooter from "./public/PublicFooter";
@@ -12,7 +12,7 @@ export default function PublicLayout({ children }) {
     <div className="min-h-screen bg-[var(--amc-bg-main)] text-[var(--amc-text-body)]">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[var(--amc-z-toast)] focus:rounded-[var(--amc-radius-sm)] focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-[var(--amc-primary-900)]"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[var(--amc-z-toast)] focus:rounded-[var(--amc-radius-sm)] focus:bg-[var(--amc-bg-surface)] focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-[var(--amc-text-strong)]"
       >
         Skip to content
       </a>
