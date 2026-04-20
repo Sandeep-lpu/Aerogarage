@@ -1,4 +1,4 @@
-﻿import { cn } from "../../utils/cn";
+import { cn } from "../../utils/cn";
 
 export function Title({ as, className, children }) {
   const Component = as || "h2";

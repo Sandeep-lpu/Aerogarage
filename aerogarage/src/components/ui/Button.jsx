@@ -1,12 +1,12 @@
-﻿import { cn } from "../../utils/cn";
+import { cn } from "../../utils/cn";
 
 const variants = {
   primary:
-    "bg-[var(--amc-accent-600)] text-white border border-transparent hover:bg-[var(--amc-accent-500)] focus-visible:outline-[var(--amc-accent-400)]",
+    "bg-[var(--amc-accent-600)] text-white border border-transparent hover:bg-[var(--amc-accent-500)] focus-visible:outline-[var(--amc-accent-400)] shadow-[var(--amc-shadow-sm)]",
   secondary:
-    "bg-transparent text-[var(--amc-primary-900)] border border-[var(--amc-border)] hover:bg-[var(--amc-steel-50)] focus-visible:outline-[var(--amc-accent-400)]",
+    "bg-transparent text-[var(--amc-text-strong)] border border-[var(--amc-border)] hover:bg-[var(--amc-bg-surface)] focus-visible:outline-[var(--amc-accent-400)]",
   ghost:
-    "bg-transparent text-[var(--amc-primary-900)] border border-transparent hover:bg-[var(--amc-steel-50)] focus-visible:outline-[var(--amc-accent-400)]",
+    "bg-transparent text-[var(--amc-text-strong)] border border-transparent hover:bg-[var(--amc-bg-surface)] focus-visible:outline-[var(--amc-accent-400)]",
 };
 
 const sizes = {
