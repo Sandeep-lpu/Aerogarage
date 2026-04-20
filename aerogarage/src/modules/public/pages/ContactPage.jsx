@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Badge, Button, Card, Input, Section, Select, TextBlock, Title } from "../../../components/ui";
 import {
   mapValidationErrors,
@@ -99,23 +99,23 @@ export default function ContactPage() {
   };
 
   return (
-    <>
+    <main className="amc-page-bg amc-page-bg-contact">
       <Section className="bg-[var(--amc-gradient-hero)] text-white">
-        <Badge className="bg-blue-100/20 text-blue-100">Corporate Contact</Badge>
+        <Badge className="amc-hero-badge">Corporate Contact</Badge>
         <Title as="h1" className="mt-4 max-w-4xl text-4xl text-white md:text-5xl">
           Lead Conversion and Corporate Inquiry Center
         </Title>
-        <TextBlock className="mt-5 max-w-3xl text-blue-100">
+        <TextBlock className="amc-hero-lead mt-5 max-w-3xl">
           Route your request to the correct AMC function and receive an organized response pathway.
         </TextBlock>
         <div className="mt-8 grid gap-3 md:grid-cols-3">
-          <div className="rounded-[var(--amc-radius-md)] border border-white/15 bg-white/10 p-4 text-sm text-blue-100">Sales: sales@aeroamc.com</div>
-          <div className="rounded-[var(--amc-radius-md)] border border-white/15 bg-white/10 p-4 text-sm text-blue-100">Careers: careers@aeroamc.com</div>
-          <div className="rounded-[var(--amc-radius-md)] border border-white/15 bg-white/10 p-4 text-sm text-blue-100">Corporate: contact@aeroamc.com</div>
+          <div className="amc-hero-channel-card rounded-[var(--amc-radius-md)] border p-4 text-sm">Sales: sales@aeroamc.com</div>
+          <div className="amc-hero-channel-card rounded-[var(--amc-radius-md)] border p-4 text-sm">Careers: careers@aeroamc.com</div>
+          <div className="amc-hero-channel-card rounded-[var(--amc-radius-md)] border p-4 text-sm">Corporate: contact@aeroamc.com</div>
         </div>
       </Section>
 
-      <Section title="Submit Inquiry" subtitle="Form validation and channel routing are configured for conversion-focused lead capture.">
+      <Section title="Submit Inquiry" subtitle="Form validation and channel routing are configured for conversion-focused lead capture." islandHeader={true}>
         <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
           <Card>
             <form className="grid gap-4" onSubmit={onSubmit} noValidate>
@@ -139,7 +139,7 @@ export default function ContactPage() {
                 <span className="text-sm font-medium text-[var(--amc-text-strong)]">Message</span>
                 <textarea
                   rows={5}
-                  className="rounded-[var(--amc-radius-md)] border border-[var(--amc-border)] bg-white px-3 py-3 text-sm text-[var(--amc-text-strong)] outline-none transition duration-[var(--amc-dur-fast)] ease-[var(--amc-ease-standard)] focus:border-[var(--amc-accent-500)] focus:ring-2 focus:ring-[var(--amc-accent-400)]/25"
+                  className="rounded-[var(--amc-radius-md)] border border-[var(--amc-border)] bg-[var(--amc-bg-field)] px-3 py-3 text-sm text-[var(--amc-text-strong)] outline-none transition duration-[var(--amc-dur-fast)] ease-[var(--amc-ease-standard)] focus:border-[var(--amc-accent-500)] focus:ring-2 focus:ring-[var(--amc-accent-400)]/25"
                   value={form.message}
                   onChange={onChange("message")}
                   onBlur={onBlur("message")}
@@ -190,24 +190,49 @@ export default function ContactPage() {
 
             <Card>
               <h3 className="text-xl">Riyadh Office</h3>
-              <TextBlock className="mt-3">3869, Wadi Al Raihan, Al Qadisiyah District, Dammam Road, Riyadh 13261</TextBlock>
-              <TextBlock className="mt-2">Mobile: +966 580 722 815</TextBlock>
+              <div className="mt-3 grid gap-1">
+                <TextBlock>3869, Wadi Al Raihan,</TextBlock>
+                <TextBlock>Al Qadisiyah District - 7777</TextBlock>
+                <TextBlock>Dammam Road, Riyadh</TextBlock>
+                <TextBlock>Kingdom of Saudi Arabia – 13261</TextBlock>
+              </div>
+              <TextBlock className="mt-3">Mobile: +966 580 722 815</TextBlock>
             </Card>
           </div>
         </div>
       </Section>
 
-      <Section className="bg-[var(--amc-gradient-surface)]" title="Office Map" subtitle="Location and access support for partners and visitors.">
-        <Card className="overflow-hidden p-0">
+      <Section className="bg-[var(--amc-gradient-surface)]">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-[var(--amc-text-strong)]">Office Map</h2>
+          <p className="mt-1 text-sm text-[var(--amc-text-muted)]">Location and access support for partners and visitors.</p>
+        </div>
+        <div className="overflow-hidden rounded-[var(--amc-radius-lg)] border border-[var(--amc-border)] shadow-[var(--amc-shadow-md)]">
           <iframe
-            title="Aerogarage Riyadh Office"
-            src="https://www.google.com/maps?q=Riyadh%20Saudi%20Arabia&output=embed"
-            className="h-[380px] w-full border-0"
+            title="Aerogarage Riyadh Office – Al Qadisiyah"
+            src="https://maps.google.com/maps?q=24.8299748,46.828774&t=m&z=16&output=embed"
+            className="h-[480px] w-full border-0"
             loading="lazy"
+            allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
           />
-        </Card>
+        </div>
+        <div className="mt-4 flex items-start gap-3 rounded-[var(--amc-radius-md)] border border-[var(--amc-border)] bg-[var(--amc-glass-bg)] px-4 py-3 backdrop-blur">
+          <span className="mt-0.5 text-lg" aria-hidden="true">📍</span>
+          <div>
+            <p className="text-sm font-semibold text-[var(--amc-text-strong)]">Aerogarage Company (AMC)</p>
+            <p className="mt-0.5 text-sm text-[var(--amc-text-muted)]">3869, Wadi Al Raihan, Al Qadisiyah District - 7777, Dammam Road, Riyadh, Kingdom of Saudi Arabia – 13261</p>
+          </div>
+          <a
+            href="https://maps.app.goo.gl/6v26vLot6SW1TH427"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto shrink-0 rounded-[var(--amc-radius-sm)] bg-[var(--amc-accent-600)] px-3 py-1.5 text-xs font-semibold text-white transition hover:opacity-90"
+          >
+            Open in Maps
+          </a>
+        </div>
       </Section>
-    </>
+    </main>
   );
 }
