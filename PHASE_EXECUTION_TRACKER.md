@@ -35,6 +35,10 @@ Evidence:
 - `aerogarage/src/styles/tokens.css`
 - `aerogarage/src/components/ui`
 - `aerogarage/src/index.css`
+- `aerogarage/src/styles/D1_DARK_TOKENS_SPEC.md`
+- `aerogarage/src/styles/D2_DARK_COMPONENT_SPEC.md`
+- `aerogarage/src/styles/D3_DARK_PAGE_MAPPING.md`
+- `aerogarage/src/styles/D4_DARK_QA_SIGNOFF.md`
 
 ## P3: Public UX Architecture
 Status: `Completed`
@@ -186,3 +190,74 @@ Evidence:
 1. Run cross-device manual QA pass (desktop + tablet + phone).
 2. Freeze release checklist and environment settings (dev/staging/prod).
 3. Publish release candidate build.
+
+---
+
+## P11: Employee Portal IA + Permission Model
+Status: `Completed`
+
+Checklist:
+- [x] Employee role introduced in RBAC constants
+- [x] Employee portal route and layout added
+- [x] Approval-gated workflow states defined (`draft -> submitted -> approved/rejected -> executed/closed`)
+
+Evidence:
+- `server/src/shared/constants/roles.js`
+- `server/src/shared/models/employeeWorkItem.model.js`
+- `aerogarage/src/layouts/EmployeeLayout.jsx`
+- `aerogarage/src/app/router/AppRouter.jsx`
+
+## P12: Employee Backend APIs + Workflow States
+Status: `Completed`
+
+Checklist:
+- [x] Employee route mounted (`/api/employee`)
+- [x] Requests/tasks/profile/documents APIs added
+- [x] Admin approval APIs added (`/api/admin/approvals`)
+- [x] Execution guarded until admin approval
+
+Evidence:
+- `server/src/routes/employee.routes.js`
+- `server/src/modules/employee/controllers/employee.controller.js`
+- `server/src/modules/employee/services/employee.service.js`
+- `server/src/modules/employee/validators/employee.validators.js`
+- `server/src/routes/admin.routes.js`
+
+## P13: Employee Frontend Portal
+Status: `Completed`
+
+Checklist:
+- [x] Employee login page
+- [x] Employee dashboard with requests/tasks/documents/profile tabs
+- [x] API integration with auth-aware calls
+
+Evidence:
+- `aerogarage/src/modules/employee/pages/LoginPage.jsx`
+- `aerogarage/src/modules/employee/pages/DashboardPage.jsx`
+- `aerogarage/src/services/api/employeeApi.js`
+
+## P14: Admin Approval Integration
+Status: `Completed`
+
+Checklist:
+- [x] Approval queue and decision endpoints wired in admin APIs
+- [x] Admin dashboard approvals tab with approve/reject actions
+- [x] Employee role assignment action surfaced in admin user table
+
+Evidence:
+- `aerogarage/src/services/api/adminApi.js`
+- `aerogarage/src/modules/admin/pages/DashboardPage.jsx`
+
+## P15: Employee QA + Security Validation
+Status: `In Progress (manual walkthrough pending)`
+
+Checklist:
+- [x] Frontend lint and build pass after employee portal integration
+- [x] Backend route import sanity checks
+- [ ] Manual E2E flow: employee draft -> submit -> admin approve -> employee execute/close
+- [ ] Manual permission rejection checks for non-admin approval attempts
+
+Evidence:
+- `aerogarage` `npm run lint`
+- `aerogarage` `npm run build`
+- `server` route import checks for admin/employee
