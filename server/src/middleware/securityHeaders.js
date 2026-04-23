@@ -1,4 +1,8 @@
+// ── Security Headers Middleware ──────────────────────────────────────────
+// Sets various HTTP response headers to protect against common web vulnerabilities
+// like clickjacking, MIME sniffing, and cross-site scripting (XSS).
 export function securityHeaders(req, res, next) {
+  // Prevent browsers from trying to guess ("sniff") the MIME type
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Referrer-Policy", "no-referrer");
