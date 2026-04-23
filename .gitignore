@@ -1,4 +1,4 @@
-﻿# Global ignores for fullstack workspace
+# Global ignores for fullstack workspace
 
 # Dependencies
 node_modules/
@@ -13,16 +13,37 @@ build/
 # Env files
 .env
 .env.*
+**/.env
+**/.env.*
 !.env.example
+!**/.env.example
 server/.env
 
 # Logs
 logs/
 *.log
+*.out.log
+*.err.log
+tmp-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Reports / generated artifacts
+lighthouse-*.json
+images_list.json
+lint-errors.json
+lint-errors.txt
+build_log.txt
+
+# Temp / scratch scripts
+tempscript*.js
+tempscript*.mjs
+lt_log.txt
+
+# Misc generated links/exports
+link.txt
 
 # OS / Editor
 .DS_Store

@@ -1,11 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0f2b46" />
-    <link rel="preload" as="image" href="/images/brand/hero-fallback.svg" />
+    <link rel="preload" as="image" href="/images/brand/amc-hero-aviation.svg" />
 
     <title>Aerogarage | Aviation Services in Riyadh</title>
     <meta
@@ -20,7 +20,7 @@
       property="og:description"
       content="Aerogarage Company delivers safety-driven aviation services, training, and technical operations aligned with Saudi Vision 2030."
     />
-    <meta property="og:image" content="https://www.aeroamc.com/images/brand/hero-fallback.svg" />
+    <meta property="og:image" content="https://www.aeroamc.com/images/brand/amc-hero-aviation.svg" />
     <meta property="og:url" content="https://www.aeroamc.com/" />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -29,12 +29,25 @@
       name="twitter:description"
       content="Aerogarage Company delivers safety-driven aviation services, training, and technical operations aligned with Saudi Vision 2030."
     />
-    <meta name="twitter:image" content="https://www.aeroamc.com/images/brand/hero-fallback.svg" />
+    <meta name="twitter:image" content="https://www.aeroamc.com/images/brand/amc-hero-aviation.svg" />
 
     <link rel="canonical" href="https://www.aeroamc.com/" />
+    <script>
+      (function() {
+        try {
+          var theme = localStorage.getItem('amc-theme');
+          if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'amc-dark');
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
+

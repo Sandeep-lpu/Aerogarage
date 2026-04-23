@@ -1,4 +1,4 @@
-﻿import { getSeoForPath, SITE_URL } from "./seoConfig";
+import { getSeoForPath, SITE_URL } from "./seoConfig";
 
 function upsertMetaByName(name, content) {
   let tag = document.head.querySelector(`meta[name="${name}"]`);

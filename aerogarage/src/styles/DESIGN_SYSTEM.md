@@ -25,3 +25,9 @@
 - Container width: up to 1280px.
 - Spacing follows 8px system.
 - Optimized for monitor, operations room displays, tablet, mobile.
+
+## Dark Mode Design Specs (Pre-Implementation)
+- D1 tokens spec: `aerogarage/src/styles/D1_DARK_TOKENS_SPEC.md`
+- D2 component spec: `aerogarage/src/styles/D2_DARK_COMPONENT_SPEC.md`
+- D3 page mapping: `aerogarage/src/styles/D3_DARK_PAGE_MAPPING.md`
+- D4 QA signoff: `aerogarage/src/styles/D4_DARK_QA_SIGNOFF.md`

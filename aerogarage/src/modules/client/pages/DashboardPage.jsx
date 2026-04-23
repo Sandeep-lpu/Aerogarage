@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+const EMPTY_ARRAY = [];
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Alert,
   Badge,
@@ -13,6 +15,7 @@ import {
   Title,
 } from "../../../components/ui";
 import { useAuth } from "../../../app/auth/authContext";
+import { useSocket } from "../../../app/auth/SocketProvider";
 import {
   createClientRequest,
   fetchClientDocuments,
@@ -76,11 +79,8 @@ function downloadDocumentFile(doc) {
 
 export default function ClientDashboardPage() {
   const { authState, logout, withAuthRequest } = useAuth();
-  const [requests, setRequests] = useState([]);
-  const [documents, setDocuments] = useState([]);
-  const [profile, setProfile] = useState(null);
-  const [loadingData, setLoadingData] = useState(true);
-  const [loadError, setLoadError] = useState("");
+  const queryClient = useQueryClient();
+  const socket = useSocket();
 
   const [requestForm, setRequestForm] = useState(initialRequest);
   const [requestTouched, setRequestTouched] = useState({});
@@ -102,34 +102,39 @@ export default function ClientDashboardPage() {
 
   const requestErrors = useMemo(() => validateRequestForm(requestForm), [requestForm]);
 
-  const loadPortalData = useCallback(async () => {
-    setLoadingData(true);
-    setLoadError("");
-
-    try {
+  const { data: portalData, isLoading: loadingData, error: queryError } = useQuery({
+    queryKey: ["clientPortalData"],
+    queryFn: async () => {
       const [profileRes, requestsRes, documentsRes] = await withAuthRequest((token) =>
         Promise.all([
           fetchClientProfile(token),
           fetchClientRequests(token),
           fetchClientDocuments(token),
         ]));
-
-      const profileData = profileRes?.data?.profile || null;
-      setProfile(profileData);
-      setProfileForm({ fullName: profileData?.fullName || "" });
-      setRequests(requestsRes?.data?.requests || []);
-      setDocuments(documentsRes?.data?.documents || []);
-    } catch (error) {
-      const fallbackMessage = error?.message || parseApiError(error).message;
-      setLoadError(fallbackMessage || "Unable to load client dashboard data.");
-    } finally {
-      setLoadingData(false);
+      return {
+        profile: profileRes?.data?.profile || null,
+        requests: requestsRes?.data?.requests || [],
+        documents: documentsRes?.data?.documents || []
+      };
     }
-  }, [withAuthRequest]);
+  });
+
+  const loadError = queryError ? parseApiError(queryError).message || "Unable to load client dashboard data." : "";
 
   useEffect(() => {
-    loadPortalData();
-  }, [loadPortalData]);
+    if (portalData?.profile) {
+      setProfileForm({ fullName: portalData.profile.fullName || "" });
+    }
+  }, [portalData?.profile]);
+
+  useEffect(() => {
+    if (!socket) return;
+    const handleUpdate = () => {
+      queryClient.invalidateQueries({ queryKey: ["clientPortalData"] });
+    };
+    socket.on("data_updated", handleUpdate);
+    return () => socket.off("data_updated", handleUpdate);
+  }, [socket, queryClient]);
 
   const onRequestChange = (field) => (event) => {
     setRequestForm((prev) => ({ ...prev, [field]: event.target.value }));
@@ -149,7 +154,7 @@ export default function ClientDashboardPage() {
       setRequestMessage(response?.message || "Request created");
       setRequestForm(initialRequest);
       setRequestTouched({});
-      await loadPortalData();
+      await queryClient.invalidateQueries({ queryKey: ["clientPortalData"] });
     } catch (error) {
       const parsed = parseApiError(error);
       setRequestMessage(parsed.message || "Failed to create request");
@@ -166,8 +171,8 @@ export default function ClientDashboardPage() {
     try {
       const response = await withAuthRequest((token) =>
         updateClientProfile(token, { fullName: profileForm.fullName.trim() }));
-      setProfile(response?.data?.profile || null);
       setProfileMessage(response?.message || "Profile updated");
+      await queryClient.invalidateQueries({ queryKey: ["clientPortalData"] });
     } catch (error) {
       const parsed = parseApiError(error);
       setProfileMessage(parsed.message || "Failed to update profile");
@@ -175,6 +180,10 @@ export default function ClientDashboardPage() {
       setProfileLoading(false);
     }
   };
+
+  const requests = portalData?.requests || EMPTY_ARRAY;
+  const documents = portalData?.documents || EMPTY_ARRAY;
+  const profile = portalData?.profile || null;
 
   const filteredSortedRequests = useMemo(() => {
     const query = requestSearch.trim().toLowerCase();
@@ -283,7 +292,7 @@ export default function ClientDashboardPage() {
                 <span className="text-sm font-medium text-[var(--amc-text-strong)]">Description</span>
                 <textarea
                   rows={4}
-                  className="rounded-[var(--amc-radius-md)] border border-[var(--amc-border)] bg-white px-3 py-3 text-sm text-[var(--amc-text-strong)] outline-none transition duration-[var(--amc-dur-fast)] ease-[var(--amc-ease-standard)] focus:border-[var(--amc-accent-500)] focus:ring-2 focus:ring-[var(--amc-accent-400)]/25"
+                  className="rounded-[var(--amc-radius-md)] border border-[var(--amc-border)] bg-[var(--amc-bg-field)] px-3 py-3 text-sm text-[var(--amc-text-strong)] outline-none transition duration-[var(--amc-dur-fast)] ease-[var(--amc-ease-standard)] focus:border-[var(--amc-accent-500)] focus:ring-2 focus:ring-[var(--amc-accent-400)]/25"
                   value={requestForm.description}
                   onChange={onRequestChange("description")}
                 />
@@ -391,34 +400,99 @@ export default function ClientDashboardPage() {
     },
   ];
 
+  const [activeView, setActiveView] = useState("requests");
+
   return (
-    <Section>
-      <Card>
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <Title as="h2" className="text-2xl">Client Portal Dashboard</Title>
-            <TextBlock className="mt-2">Welcome, {authState?.user?.fullName || "Client User"}</TextBlock>
-            <TextBlock className="mt-1">Role: {authState?.user?.role}</TextBlock>
+    <div className="flex h-full w-full overflow-hidden bg-transparent">
+      {/* Sidebar */}
+      <aside className="w-64 flex-shrink-0 border-r border-white/10 bg-slate-900/40 backdrop-blur-xl flex flex-col pt-6 z-10">
+        <div className="px-6 mb-4">
+          <p className="text-xs font-semibold text-slate-500 tracking-widest uppercase">Client Services</p>
+        </div>
+        <nav className="flex-1 flex flex-col gap-1.5 px-3 overflow-y-auto">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveView(tab.id)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                activeView === tab.id
+                  ? "bg-violet-600/15 text-violet-400 border border-violet-500/20 shadow-[0_0_20px_rgba(139,92,246,0.1)]"
+                  : "text-slate-400 hover:bg-white/5 hover:text-slate-200 border border-transparent"
+              }`}
+            >
+              <div className={`h-1.5 w-1.5 rounded-full ${activeView === tab.id ? "bg-violet-400 shadow-[0_0_8px_rgba(167,139,250,0.8)]" : "bg-transparent"}`} />
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+        <div className="p-5 border-t border-white/10 mt-auto bg-slate-900/50">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center border border-white/20 shadow-lg">
+              <span className="text-sm font-bold text-white uppercase">{authState?.user?.fullName?.charAt(0) || "C"}</span>
+            </div>
+            <div className="overflow-hidden flex-1">
+              <p className="text-sm font-semibold text-white truncate">{authState?.user?.fullName || "Client User"}</p>
+              <p className="text-xs text-violet-300 truncate uppercase tracking-wide">{authState?.user?.role}</p>
+            </div>
           </div>
-          <Button variant="secondary" onClick={logout}>Logout</Button>
+          <Button variant="secondary" className="w-full bg-slate-800 hover:bg-slate-700 border-white/10 text-slate-200 shadow-md" onClick={logout}>
+            Sign Out Securely
+          </Button>
         </div>
-      </Card>
+      </aside>
 
-      {loadError ? (
-        <Alert variant="danger" className="mt-6" title="Data Load Failed">
-          {loadError}
-        </Alert>
-      ) : null}
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto relative z-10">
+        <div className="p-6 md:p-10 max-w-7xl mx-auto">
+          {/* Welcome Header */}
+          <div className="mb-8 rounded-2xl border border-white/10 bg-slate-900/40 p-8 shadow-2xl backdrop-blur-md relative overflow-hidden">
+            <div className="absolute right-0 top-0 -mt-20 -mr-20 h-72 w-72 rounded-full bg-violet-600/10 blur-[80px] pointer-events-none" />
+            <div className="absolute left-1/4 bottom-0 -mb-10 h-40 w-40 rounded-full bg-purple-600/10 blur-[60px] pointer-events-none" />
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <Badge variant="info" className="bg-violet-500/10 text-violet-400 border-violet-500/20 mb-3">Client Operations</Badge>
+                <Title as="h2" className="text-3xl md:text-4xl font-bold text-white tracking-wide">
+                  Welcome, {authState?.user?.fullName?.split(' ')[0] || "Client"}
+                </Title>
+                <TextBlock className="text-slate-400 mt-2 max-w-2xl text-lg">
+                  Track turnaround-critical requests, reports, and account-level operations from one dashboard.
+                </TextBlock>
+              </div>
+              <div className="flex items-center gap-4 bg-slate-950/50 p-4 rounded-xl border border-white/10">
+                <div className="text-right">
+                  <p className="text-xs text-slate-500 uppercase tracking-wider">Total Requests</p>
+                  <p className="text-2xl font-bold text-white">{requests.length}</p>
+                </div>
+                <div className="w-px h-10 bg-white/10" />
+                <div className="text-right">
+                  <p className="text-xs text-slate-500 uppercase tracking-wider">Documents</p>
+                  <p className="text-2xl font-bold text-violet-400">{documents.length}</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-      {loadingData ? (
-        <Card className="mt-6">
-          <TextBlock>Loading portal modules...</TextBlock>
-        </Card>
-      ) : (
-        <div className="mt-6">
-          <Tabs items={tabs} />
+          {loadError && (
+            <Alert variant="danger" className="mb-6 bg-red-950/40 border-red-500/30 text-red-200" title="Data Load Failed">
+              {loadError}
+            </Alert>
+          )}
+
+          {loadingData ? (
+            <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-16 text-center shadow-xl backdrop-blur-md">
+              <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-violet-500/20 border-t-violet-500 shadow-[0_0_20px_rgba(139,92,246,0.3)]" />
+              <p className="mt-6 text-slate-400 font-medium text-lg tracking-wide">Loading portal modules...</p>
+            </div>
+          ) : (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+              {tabs.find(t => t.id === activeView)?.content}
+            </div>
+          )}
         </div>
-      )}
-    </Section>
+      </div>
+    </div>
   );
 }
+
+
+

@@ -1,8 +1,7 @@
-﻿import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "../../../app/router/Link";
 import { Badge, Button, Card, Section, Table, TextBlock, Title } from "../../../components/ui";
 import { fetchServicesContent, parseApiError } from "../../../services/api/publicApi";
-import MediaStage from "../components/media/MediaStage";
 import { serviceComparison } from "../content/servicesCatalog";
 
 const processFramework = [
@@ -37,32 +36,24 @@ export default function ServicesPage() {
   }, [loadServices]);
 
   return (
-    <>
+    <main className="amc-page-bg amc-page-bg-services">
       <Section className="bg-[var(--amc-gradient-hero)] text-white">
-        <Badge className="bg-blue-100/20 text-blue-100">Operational Portfolio</Badge>
+        <Badge className="amc-hero-badge">Operational Portfolio</Badge>
         <Title as="h1" className="mt-4 max-w-4xl text-4xl text-white md:text-5xl">
           Integrated Aviation Services for Enterprise Operations
         </Title>
-        <TextBlock className="mt-5 max-w-3xl text-blue-100">
+        <TextBlock className="amc-hero-lead mt-5 max-w-3xl">
           AMC provides structured service programs across cabin operations, technical maintenance, security, and infrastructure reliability.
         </TextBlock>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button as={Link} to="/contact">Request Service Proposal</Button>
-          <Button as={Link} to="/contact" variant="secondary" className="border-white text-white hover:bg-white/10">
+          <Button as={Link} to="/contact" variant="secondary" className="amc-hero-secondary-btn">
             Book Operations Meeting
           </Button>
         </div>
       </Section>
 
-      <Section title="Service Explainer Visual" subtitle="A controlled 3D stage to communicate service system thinking without harming page performance.">
-        <MediaStage
-          variant="service"
-          title="Service Architecture Explainer"
-          description="This block can later host 3D operational workflow models and asset overlays for enterprise presentations."
-        />
-      </Section>
-
-      <Section title="Service Hub" subtitle="Select a service lane to view detailed scope, process, and conversion path.">
+      <Section title="Service Hub" subtitle="Select a service lane to view detailed scope, process, and conversion path." islandHeader={true}>
         {loading ? <TextBlock>Loading services...</TextBlock> : null}
         {errorMessage ? (
           <div className="flex items-center gap-3">
@@ -101,7 +92,7 @@ export default function ServicesPage() {
         />
       </Section>
 
-      <Section title="AMC Delivery Framework" subtitle="The process model used across all service engagements.">
+      <Section title="AMC Delivery Framework" subtitle="The process model used across all service engagements." islandHeader={true}>
         <div className="grid gap-4 md:grid-cols-2">
           {processFramework.map((step, index) => (
             <Card key={step}>
@@ -111,6 +102,6 @@ export default function ServicesPage() {
           ))}
         </div>
       </Section>
-    </>
+    </main>
   );
 }

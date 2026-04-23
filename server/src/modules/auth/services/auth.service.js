@@ -1,5 +1,4 @@
-﻿import bcrypt from "bcrypt";
-import crypto from "crypto";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
   createRefreshToken,
@@ -10,10 +9,11 @@ import {
   revokeAllRefreshTokensForUser,
   revokeRefreshTokenByHash,
 } from "../repositories/auth.repository.js";
-
-function hashToken(token) {
-  return crypto.createHash("sha256").update(token).digest("hex");
-}
+import EmailVerificationToken, {
+  generateRawToken,
+  hashToken,
+} from "../../../shared/models/emailVerificationToken.model.js";
+import { sendVerificationEmail } from "../../../services/mailer.js";
 
 function signAccessToken(user, env) {
   return jwt.sign(
@@ -52,9 +52,22 @@ export async function registerUser(payload) {
   const user = await createUser({
     fullName: payload.fullName,
     email: payload.email,
-    role: payload.role,
+    role: payload.role || "client",
     passwordHash,
   });
+
+  // Send email verification — fire-and-forget so SMTP issues never fail registration
+  try {
+    const rawToken = generateRawToken();
+    const tokenHash = hashToken(rawToken);
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 h
+    await EmailVerificationToken.create({ userId: user._id, tokenHash, expiresAt });
+    sendVerificationEmail(user.email, rawToken).catch((err) =>
+      console.error("[Auth] Failed to send verification email:", err.message),
+    );
+  } catch (err) {
+    console.error("[Auth] Could not create verification token:", err.message);
+  }
 
   return toAuthUser(user);
 }
@@ -150,3 +163,67 @@ export async function revokeUserSessions(userId) {
 export function verifyAccessToken(token, env) {
   return jwt.verify(token, env.JWT_ACCESS_SECRET);
 }
+
+/**
+ * verifyEmailToken — validates the raw token from the email link,
+ * marks the user's emailVerified = true, and deletes the token.
+ */
+export async function verifyEmailToken(rawToken) {
+  if (!rawToken) {
+    const err = new Error("Verification token is required");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const tokenHash = hashToken(rawToken);
+  const record = await EmailVerificationToken.findOne({ tokenHash });
+
+  if (!record || record.expiresAt < new Date()) {
+    // Delete expired/used record if it exists
+    if (record) await record.deleteOne();
+    const err = new Error("Verification link is invalid or has expired");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // Mark user as verified and delete the token atomically
+  await Promise.all([
+    findUserById(record.userId).then((user) => {
+      if (user) {
+        user.emailVerified = true;
+        return user.save();
+      }
+    }),
+    record.deleteOne(),
+  ]);
+
+  return { message: "Email verified successfully" };
+}
+
+/**
+ * resendVerificationEmail — lets users request a new verification link
+ * if the first email was missed or expired.
+ */
+export async function resendVerificationEmail(userId) {
+  const user = await findUserById(userId);
+  if (!user) {
+    const err = new Error("User not found");
+    err.statusCode = 404;
+    throw err;
+  }
+  if (user.emailVerified) {
+    const err = new Error("Email is already verified");
+    err.statusCode = 409;
+    throw err;
+  }
+
+  // Revoke any existing tokens for this user, then create a fresh one
+  await EmailVerificationToken.deleteMany({ userId });
+
+  const rawToken = generateRawToken();
+  const tokenHash = hashToken(rawToken);
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  await EmailVerificationToken.create({ userId, tokenHash, expiresAt });
+  await sendVerificationEmail(user.email, rawToken);
+}
+

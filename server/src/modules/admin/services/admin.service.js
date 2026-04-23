@@ -5,6 +5,8 @@ import {
   listServiceRequests,
   listUsers,
   updateServiceRequest,
+  assignServiceRequest,
+  enrollEmployeeInTraining,
   updateUser,
 } from "../repositories/admin.repository.js";
 import {
@@ -17,18 +19,24 @@ import {
   updateServiceContent,
   updateTrainingContent,
 } from "../../public/services/publicContent.service.js";
+import {
+  approveEmployeeWorkItem,
+  getEmployeeApprovalQueue,
+  rejectEmployeeWorkItem,
+} from "../../employee/services/employee.service.js";
 
 export function getAdminUsers(filters) {
   const query = {};
-  if (filters.role) query.role = filters.role;
-  if (typeof filters.isActive === "boolean") query.isActive = filters.isActive;
-  if (filters.search) {
+  const { role, isActive, search, page, limit } = filters;
+  if (role) query.role = role;
+  if (typeof isActive === "boolean") query.isActive = isActive;
+  if (search) {
     query.$or = [
-      { fullName: { $regex: filters.search, $options: "i" } },
-      { email: { $regex: filters.search, $options: "i" } },
+      { fullName: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
     ];
   }
-  return listUsers(query);
+  return listUsers(query, { page, limit });
 }
 
 export async function changeUserRole(userId, role) {
@@ -58,19 +66,38 @@ export async function changeUserStatus(userId, isActive) {
 
 export function getAdminServiceRequests(filters) {
   const query = {};
-  if (filters.status) query.status = filters.status;
-  if (filters.priority) query.priority = filters.priority;
-  return listServiceRequests(query);
+  const { status, priority, page, limit } = filters;
+  if (status) query.status = status;
+  if (priority) query.priority = priority;
+  return listServiceRequests(query, { page, limit });
 }
 
-export async function updateAdminServiceRequestStatus(requestId, status) {
+export async function updateAdminServiceRequestStatus(requestId, status, adminUserId) {
   const request = await findServiceRequestById(requestId);
   if (!request) {
     const error = new Error("Service request not found");
     error.statusCode = 404;
     throw error;
   }
-  return updateServiceRequest(requestId, { status });
+  
+  // Also push to history
+  const statusHistory = [...(request.statusHistory || []), {
+    status,
+    changedBy: adminUserId,
+    note: `Status updated by admin`,
+    at: new Date()
+  }];
+
+  return updateServiceRequest(requestId, { status, statusHistory });
+}
+
+export async function assignAdminServiceRequest(requestId, employeeId, adminUserId) {
+  try {
+    return await assignServiceRequest(requestId, employeeId, adminUserId);
+  } catch (err) {
+    err.statusCode = err.message.includes("found") ? 404 : 400;
+    throw err;
+  }
 }
 
 export function getAdminTrainingModules() {
@@ -85,6 +112,15 @@ export function patchAdminTrainingModule(moduleId, updates) {
     throw error;
   }
   return moduleItem;
+}
+
+export async function enrollAdminEmployeeTraining(employeeId, moduleId, adminUserId, note) {
+  try {
+    return await enrollEmployeeInTraining(employeeId, moduleId, adminUserId, note);
+  } catch (err) {
+    err.statusCode = err.message.includes("valid employee") ? 404 : 409;
+    throw err;
+  }
 }
 
 export function getAdminPublicContent() {
@@ -106,4 +142,16 @@ export function patchAdminServiceContent(slug, updates) {
 
 export function patchAdminTrainingContent(updates) {
   return updateTrainingContent(updates);
+}
+
+export function getAdminApprovalQueue() {
+  return getEmployeeApprovalQueue();
+}
+
+export function approveAdminWorkItem(adminUser, workItemId, payload) {
+  return approveEmployeeWorkItem(adminUser, workItemId, payload);
+}
+
+export function rejectAdminWorkItem(adminUser, workItemId, payload) {
+  return rejectEmployeeWorkItem(adminUser, workItemId, payload);
 }

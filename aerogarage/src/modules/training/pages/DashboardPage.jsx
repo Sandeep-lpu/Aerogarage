@@ -60,6 +60,7 @@ export default function TrainingDashboardPage() {
   const [resourceSearch, setResourceSearch] = useState("");
   const [resourceType, setResourceType] = useState("all");
   const [downloadingResourceId, setDownloadingResourceId] = useState("");
+  const [activeView, setActiveView] = useState("modules");
 
   const loadTrainingData = useCallback(async () => {
     setLoadingData(true);
@@ -287,35 +288,99 @@ export default function TrainingDashboardPage() {
   ];
 
   return (
-    <Section>
-      <Card>
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <Title as="h2" className="text-2xl">Training Dashboard</Title>
-            <TextBlock className="mt-2">Welcome, {authState?.user?.fullName || "Student"}</TextBlock>
-            <TextBlock className="mt-1">Role: {authState?.user?.role}</TextBlock>
-            <TextBlock className="mt-1">Active Modules: {dashboard?.summary?.activeModules ?? "-"}</TextBlock>
-            <TextBlock className="mt-1">Upcoming Exams: {dashboard?.summary?.upcomingExams ?? "-"}</TextBlock>
+    <div className="flex h-full w-full overflow-hidden bg-transparent">
+      {/* Sidebar Navigation */}
+      <aside className="w-64 flex-shrink-0 border-r border-white/10 bg-slate-900/40 backdrop-blur-xl flex flex-col pt-6 z-10 transition-all">
+        <div className="px-6 mb-4">
+          <p className="text-xs font-semibold text-slate-500 tracking-widest uppercase">Learning Tools</p>
+        </div>
+        <nav className="flex-1 flex flex-col gap-1.5 px-3 overflow-y-auto">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveView(tab.id)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                activeView === tab.id 
+                  ? "bg-cyan-600/15 text-cyan-400 border border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.1)]" 
+                  : "text-slate-400 hover:bg-white/5 hover:text-slate-200 border border-transparent"
+              }`}
+            >
+              <div className={`h-1.5 w-1.5 rounded-full ${activeView === tab.id ? "bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" : "bg-transparent"}`} />
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+        <div className="p-5 border-t border-white/10 mt-auto bg-slate-900/50">
+           <div className="flex items-center gap-3 mb-4">
+             <div className="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center border border-white/20 shadow-lg">
+               <span className="text-sm font-bold text-white uppercase">{authState?.user?.fullName?.charAt(0) || "S"}</span>
+             </div>
+             <div className="overflow-hidden flex-1">
+               <p className="text-sm font-semibold text-white truncate">{authState?.user?.fullName || "Student User"}</p>
+               <p className="text-xs text-cyan-300 truncate uppercase tracking-wide">{authState?.user?.role}</p>
+             </div>
+           </div>
+           <Button variant="secondary" className="w-full bg-slate-800 hover:bg-slate-700 border-white/10 text-slate-200 shadow-md" onClick={logout}>
+             Sign Out Securely
+           </Button>
+        </div>
+      </aside>
+
+      {/* Main Learning Canvas */}
+      <div className="flex-1 overflow-y-auto relative z-10 scrollbar-hide">
+        <div className="p-6 md:p-10 max-w-7xl mx-auto">
+          {/* Welcome Header */}
+          <div className="mb-8 amc-glass-card rounded-2xl border border-white/10 bg-slate-900/40 p-8 shadow-2xl backdrop-blur-md relative overflow-hidden">
+            <div className="absolute right-0 top-0 -mt-20 -mr-20 h-72 w-72 rounded-full bg-cyan-600/10 blur-[80px] pointer-events-none" />
+            <div className="absolute left-1/4 bottom-0 -mb-10 h-40 w-40 rounded-full bg-blue-600/10 blur-[60px] pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <Badge variant="info" className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 mb-3 shadow-[0_0_15px_rgba(6,182,212,0.15)]">EASA Part-66 Certified</Badge>
+                <Title as="h2" className="text-3xl md:text-4xl font-bold text-white tracking-wide font-[var(--amc-font-heading)]">
+                  Learning Hub, {authState?.user?.fullName?.split(' ')[0] || "Student"}
+                </Title>
+                <TextBlock className="text-slate-400 mt-2 max-w-2xl text-lg">
+                  Track course progress, schedule certification exams, and download vital compliance resources.
+                </TextBlock>
+              </div>
+              
+              <div className="flex items-center gap-4 bg-slate-950/50 p-4 rounded-xl border border-white/10 md:min-w-[280px]">
+                 <div className="flex-1 text-center">
+                    <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold">Active Modules</p>
+                    <p className="text-3xl font-bold text-white mt-1">{dashboard?.summary?.activeModules ?? "-"}</p>
+                 </div>
+                 <div className="w-px h-12 bg-white/10" />
+                 <div className="flex-1 text-center">
+                    <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold">Exams</p>
+                    <p className="text-3xl font-bold text-cyan-400 mt-1">{dashboard?.summary?.upcomingExams ?? "-"}</p>
+                 </div>
+              </div>
+            </div>
           </div>
-          <Button variant="secondary" onClick={logout}>Logout</Button>
-        </div>
-      </Card>
 
-      {loadError ? (
-        <Alert variant="danger" className="mt-6" title="Data Load Failed">
-          {loadError}
-        </Alert>
-      ) : null}
+          {loadError && (
+            <Alert variant="danger" className="mb-6 bg-red-950/40 border-red-500/30 text-red-200" title="System Notice">
+              {loadError}
+            </Alert>
+          )}
 
-      {loadingData ? (
-        <Card className="mt-6">
-          <TextBlock>Loading training modules...</TextBlock>
-        </Card>
-      ) : (
-        <div className="mt-6">
-          <Tabs items={tabs} />
+          {loadingData ? (
+            <div className="amc-glass-card rounded-2xl border border-white/10 bg-slate-900/40 p-16 text-center shadow-xl backdrop-blur-md">
+              <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-cyan-500/20 border-t-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.3)]" />
+              <p className="mt-6 text-slate-400 font-medium text-lg tracking-wide">Retrieving course library...</p>
+            </div>
+          ) : (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+              {/* Inherit Glassmorphism styling for internal tab contents dynamically */}
+              <div className="[&>div]:amc-glass-card [&>div]:border-white/10 [&>div]:bg-slate-900/40 [&>div]:backdrop-blur-md [&>div]:shadow-2xl [&>div]:rounded-2xl">
+                {tabs.find(t => t.id === activeView)?.content}
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </Section>
+      </div>
+    </div>
   );
 }
+

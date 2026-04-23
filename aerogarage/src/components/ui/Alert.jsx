@@ -1,10 +1,10 @@
-﻿import { cn } from "../../utils/cn";
+import { cn } from "../../utils/cn";
 
 const variants = {
-  info: "border-blue-200 bg-blue-50 text-blue-800",
-  success: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  warning: "border-amber-200 bg-amber-50 text-amber-800",
-  danger: "border-rose-200 bg-rose-50 text-rose-800",
+  info: "border-[var(--amc-alert-info-border)] bg-[var(--amc-alert-info-bg)] text-[var(--amc-alert-info-text)]",
+  success: "border-[var(--amc-alert-success-border)] bg-[var(--amc-alert-success-bg)] text-[var(--amc-alert-success-text)]",
+  warning: "border-[var(--amc-alert-warning-border)] bg-[var(--amc-alert-warning-bg)] text-[var(--amc-alert-warning-text)]",
+  danger: "border-[var(--amc-alert-danger-border)] bg-[var(--amc-alert-danger-bg)] text-[var(--amc-alert-danger-text)]",
 };
 
 export default function Alert({ variant = "info", title, children, className }) {

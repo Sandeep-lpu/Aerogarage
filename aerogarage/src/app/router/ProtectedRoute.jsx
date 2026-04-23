@@ -1,4 +1,4 @@
-﻿import { Badge, Button, Card, Section, TextBlock, Title } from "../../components/ui";
+import { Badge, Button, Card, Section, TextBlock, Title } from "../../components/ui";
 import Link from "./Link";
 import { useAuth } from "../auth/authContext";
 

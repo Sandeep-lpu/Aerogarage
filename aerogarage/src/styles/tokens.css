@@ -1,4 +1,4 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap");
 
 :root {
   color-scheme: light;
@@ -26,7 +26,7 @@
   --amc-border: #dbe4ee;
 
   /* Typography */
-  --amc-font-heading: "Space Grotesk", "Segoe UI", sans-serif;
+  --amc-font-heading: "Outfit", "Segoe UI", sans-serif;
   --amc-font-body: "Inter", "Segoe UI", sans-serif;
 
   --amc-text-xs: 0.75rem;
@@ -71,22 +71,87 @@
   --amc-dur-base: 260ms;
   --amc-dur-slow: 420ms;
   --amc-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --amc-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-  /* Gradients */
-  --amc-gradient-hero: linear-gradient(135deg, #0b1f36 0%, #133252 55%, #0f3f77 100%);
-  --amc-gradient-surface: linear-gradient(160deg, #ffffff 0%, #f1f5f9 100%);
+  /* Gradients & Glass */
+  --amc-gradient-hero: linear-gradient(135deg, #0f172a 0%, #173b6c 55%, #0550c4 100%);
+  --amc-gradient-surface: linear-gradient(160deg, #ffffff 0%, #e2e8f0 100%);
+  --amc-glass-bg: rgba(255, 255, 255, 0.65);
+  --amc-glow: 0 0 15px rgba(37, 99, 235, 0.15);
+  --amc-glow-strong: 0 0 25px rgba(37, 99, 235, 0.25);
+  --amc-bg-field: #ffffff;
+  --amc-bg-overlay: rgba(2, 6, 23, 0.5);
+  --amc-table-head: #f8fafc;
+  --amc-table-row-hover: #f1f5f9;
+  --amc-badge-neutral-bg: #f1f5f9;
+  --amc-badge-neutral-text: #334155;
+  --amc-badge-info-bg: #eff6ff;
+  --amc-badge-info-text: #1d4ed8;
+  --amc-badge-success-bg: #ecfdf5;
+  --amc-badge-success-text: #047857;
+  --amc-badge-warning-bg: #fffbeb;
+  --amc-badge-warning-text: #b45309;
+  --amc-badge-danger-bg: #fff1f2;
+  --amc-badge-danger-text: #be123c;
+  --amc-alert-info-bg: #eff6ff;
+  --amc-alert-info-border: #bfdbfe;
+  --amc-alert-info-text: #1e3a8a;
+  --amc-alert-success-bg: #ecfdf5;
+  --amc-alert-success-border: #a7f3d0;
+  --amc-alert-success-text: #065f46;
+  --amc-alert-warning-bg: #fffbeb;
+  --amc-alert-warning-border: #fde68a;
+  --amc-alert-warning-text: #92400e;
+  --amc-alert-danger-bg: #fff1f2;
+  --amc-alert-danger-border: #fecdd3;
+  --amc-alert-danger-text: #9f1239;
 }
 
+[data-theme="amc-dark"],
 [data-theme="ops-dark"] {
   color-scheme: dark;
-  --amc-bg-main: #07172a;
-  --amc-bg-surface: #0d223a;
-  --amc-bg-navy: #020b16;
-  --amc-text-strong: #e5edf7;
-  --amc-text-body: #bfd1e6;
-  --amc-text-muted: #8fa4bc;
-  --amc-border: #1f3b5c;
-  --amc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
-  --amc-shadow-md: 0 8px 20px rgba(0, 0, 0, 0.32);
-  --amc-shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.36);
+  --amc-bg-main: #0a1220;
+  --amc-bg-surface: #111c2e;
+  --amc-bg-navy: #08111d;
+  --amc-text-strong: #e6edf7;
+  --amc-text-body: #b8c4d9;
+  --amc-text-muted: #8fa0bc;
+  --amc-border: #24324a;
+  --amc-accent-600: #2563eb;
+  --amc-accent-500: #3b82f6;
+  --amc-accent-400: #60a5fa;
+  --amc-shadow-sm: 0 2px 8px rgba(2, 8, 23, 0.35);
+  --amc-shadow-md: 0 10px 30px rgba(2, 8, 23, 0.4);
+  --amc-shadow-lg: 0 24px 60px rgba(2, 8, 23, 0.46);
+  --amc-gradient-hero: linear-gradient(135deg, #050b14 0%, #0c1a30 55%, #0d2752 100%);
+  --amc-gradient-surface: linear-gradient(160deg, #111c2e 0%, #0d1728 100%);
+  --amc-glass-bg: rgba(15, 23, 42, 0.65);
+  --amc-glow: 0 0 15px rgba(59, 130, 246, 0.18);
+  --amc-glow-strong: 0 0 30px rgba(59, 130, 246, 0.3);
+  --amc-bg-field: #0f1a2c;
+  --amc-bg-overlay: rgba(2, 6, 23, 0.62);
+  --amc-table-head: #162338;
+  --amc-table-row-hover: #1a2940;
+  --amc-badge-neutral-bg: #1a2940;
+  --amc-badge-neutral-text: #d4def0;
+  --amc-badge-info-bg: #132846;
+  --amc-badge-info-text: #93c5fd;
+  --amc-badge-success-bg: #113328;
+  --amc-badge-success-text: #86efac;
+  --amc-badge-warning-bg: #3c2f13;
+  --amc-badge-warning-text: #fcd34d;
+  --amc-badge-danger-bg: #3d1f2d;
+  --amc-badge-danger-text: #fda4af;
+  --amc-alert-info-bg: #132846;
+  --amc-alert-info-border: #2b4c79;
+  --amc-alert-info-text: #bfdbfe;
+  --amc-alert-success-bg: #113328;
+  --amc-alert-success-border: #1d5b43;
+  --amc-alert-success-text: #a7f3d0;
+  --amc-alert-warning-bg: #3c2f13;
+  --amc-alert-warning-border: #63501f;
+  --amc-alert-warning-text: #fde68a;
+  --amc-alert-danger-bg: #3d1f2d;
+  --amc-alert-danger-border: #6b3348;
+  --amc-alert-danger-text: #fecdd3;
 }

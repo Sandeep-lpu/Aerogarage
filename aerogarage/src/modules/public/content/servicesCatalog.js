@@ -1,4 +1,4 @@
-﻿export const servicesCatalog = [
+export const servicesCatalog = [
   {
     slug: "aircraft-cleaning",
     name: "Aircraft Cleaning Services",
@@ -101,15 +101,14 @@
   },
   {
     slug: "repair-shop",
-    name: "Repair Shop (GACAR 145 Licensed)",
+    name: "Repair Organization",
     category: "MRO Shop Services",
-    summary: "Component repair and overhaul services for batteries, bottles, seats, and cabin NEF items.",
+    summary: "Dedicated Repair Organization with specialized capabilities for aircraft component repair.",
     idealFor: "Airlines and MRO clients requiring certified, traceable component shop support.",
     coverage: [
-      "Battery maintenance, charging, testing, and certification",
-      "Oxygen and fire bottle test/overhaul",
-      "Seat and cabin interior repair and refurbishment",
-      "NEF, laminates, composites, and BER replacement support",
+      "Aircraft Battery Repair",
+      "Aircraft Seat Repair",
+      "Aircraft Wheel and Brake Repair",
     ],
     process: [
       "Component intake and serviceability inspection",

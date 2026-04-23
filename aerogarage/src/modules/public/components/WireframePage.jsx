@@ -1,17 +1,17 @@
-﻿import { Badge, Button, Card, Section, Subtitle, TextBlock, Title } from "../../../components/ui";
+import { Badge, Button, Card, Section, Subtitle, TextBlock, Title } from "../../../components/ui";
 
 export default function WireframePage({ blueprint }) {
   return (
     <>
       <Section className="bg-[var(--amc-gradient-hero)] py-18 text-white">
-        <Subtitle className="text-blue-200">{blueprint.hero.eyebrow}</Subtitle>
+        <Subtitle className="amc-hero-support">{blueprint.hero.eyebrow}</Subtitle>
         <Title as="h1" className="mt-3 max-w-4xl text-4xl md:text-5xl text-white">
           {blueprint.hero.title}
         </Title>
-        <TextBlock className="mt-5 max-w-3xl text-blue-100">{blueprint.hero.description}</TextBlock>
+        <TextBlock className="amc-hero-lead mt-5 max-w-3xl">{blueprint.hero.description}</TextBlock>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button size="lg">{blueprint.hero.primaryCta}</Button>
-          <Button size="lg" variant="secondary" className="border-white text-white hover:bg-white/10">
+          <Button size="lg" variant="secondary" className="amc-hero-secondary-btn">
             {blueprint.hero.secondaryCta}
           </Button>
         </div>
@@ -32,7 +32,7 @@ export default function WireframePage({ blueprint }) {
                 <Badge variant="neutral">Objective</Badge>
               </div>
               <TextBlock className="mt-3">{section.objective}</TextBlock>
-              <TextBlock className="mt-4 text-slate-600">{section.contentPlaceholder}</TextBlock>
+              <TextBlock className="mt-4 text-[var(--amc-text-muted)]">{section.contentPlaceholder}</TextBlock>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Button>{section.ctaPrimary}</Button>
                 <Button variant="secondary">{section.ctaSecondary}</Button>

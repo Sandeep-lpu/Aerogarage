@@ -40,17 +40,71 @@ export default function TrainingLoginPage() {
   };
 
   return (
-    <Section>
-      <Card className="mx-auto max-w-xl">
-        <Badge variant="info">Training Portal</Badge>
-        <Title as="h2" className="mt-3 text-2xl">Training Login</Title>
-        <form className="mt-5 grid gap-4" onSubmit={onSubmit}>
-          <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <Button type="submit" disabled={authLoading}>{authLoading ? "Signing in..." : "Sign In"}</Button>
-        </form>
-        {message ? <TextBlock className={`mt-4 ${ok ? "text-emerald-700" : "text-rose-700"}`}>{message}</TextBlock> : null}
-      </Card>
-    </Section>
+    <div className="w-full h-full flex flex-col items-center justify-center p-6 overflow-y-auto z-10 relative">
+      <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
+        
+        {/* Decorative elements behind the card */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-cyan-500/5 blur-[100px] rounded-full pointer-events-none -z-10" />
+
+        <Card className="w-full amc-glass-card border border-white/10 bg-slate-900/60 p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] backdrop-blur-xl rounded-2xl relative overflow-hidden">
+          {/* Subtle top edge highlight */}
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+          
+          <div className="flex justify-center mb-6">
+            <Badge variant="info" className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.1)] py-1.5 px-4">Student Authentication</Badge>
+          </div>
+          
+          <Title as="h2" className="text-3xl font-bold text-center text-white mb-2 font-[var(--amc-font-heading)]">Training Portal</Title>
+          <TextBlock className="text-center text-slate-400 mb-8 text-sm">Sign in to access courses, exams, and resources.</TextBlock>
+          
+          <form className="grid gap-5 relative z-10" onSubmit={onSubmit}>
+            <div>
+              <Input 
+                label="Student Email" 
+                type="email" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                required 
+                placeholder="student@aerogarage.com"
+                className="bg-slate-950/50 border-white/10 text-white placeholder-slate-600 focus:border-cyan-500/50 focus:ring-cyan-500/20"
+              />
+            </div>
+            <div>
+              <Input 
+                label="Passkey" 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+                placeholder="••••••••"
+                className="bg-slate-950/50 border-white/10 text-white placeholder-slate-600 focus:border-cyan-500/50 focus:ring-cyan-500/20"
+              />
+            </div>
+            <Button 
+              type="submit" 
+              disabled={authLoading}
+              className="mt-4 w-full h-12 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border-0 shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] text-white font-bold tracking-wide transition-all"
+            >
+              {authLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Verifying Credentials...
+                </span>
+              ) : "Authenticate Session"}
+            </Button>
+          </form>
+          {message && (
+            <div className={`mt-6 p-4 rounded-lg border flex items-start gap-3 backdrop-blur-md ${ok ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300" : "bg-red-500/10 border-red-500/20 text-red-300"}`}>
+              {ok ? (
+                <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              ) : (
+                <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              )}
+              <span className="text-sm font-medium leading-relaxed">{message}</span>
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
   );
 }

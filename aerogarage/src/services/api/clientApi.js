@@ -1,4 +1,4 @@
-﻿import httpClient from "./httpClient";
+import httpClient from "./httpClient";
 
 function authHeader(token) {
   return { Authorization: `Bearer ${token}` };

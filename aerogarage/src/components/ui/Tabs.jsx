@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { cn } from "../../utils/cn";
 
 export default function Tabs({ items = [] }) {
@@ -16,7 +16,7 @@ export default function Tabs({ items = [] }) {
               "rounded-[var(--amc-radius-sm)] px-3 py-2 text-sm font-medium transition",
               active === item.id
                 ? "bg-[var(--amc-accent-600)] text-white"
-                : "text-[var(--amc-text-body)] hover:bg-slate-100",
+                : "text-[var(--amc-text-body)] hover:bg-[var(--amc-bg-surface)]",
             )}
             onClick={() => setActive(item.id)}
           >

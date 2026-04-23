@@ -1,4 +1,4 @@
-﻿import httpClient from "./httpClient";
+import httpClient from "./httpClient";
 
 export async function submitContactInquiry(payload) {
   const response = await httpClient.post("/public/inquiries/contact", payload);
