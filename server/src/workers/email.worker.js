@@ -7,6 +7,7 @@
 import { actuallySendMail } from "../services/mailer.js";
 
 async function startWorker() {
+  // Uses REDIS_URL from env or defaults to local Redis instance
   const redisUrl = process.env.REDIS_URL || "redis://127.0.0.1:6379";
 
   try {
@@ -18,9 +19,10 @@ async function startWorker() {
       connectTimeout: 3000,
     });
 
+    // Prevent worker from crashing the app if Redis connection drops
     redisConnection.on("error", () => {});
 
-    // Test connection before creating the worker
+    // Test connection before creating the BullMQ worker
     await redisConnection.ping();
 
     const emailWorker = new Worker(
