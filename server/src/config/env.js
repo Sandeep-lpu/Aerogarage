@@ -1,3 +1,7 @@
+// ── Environment Configuration ──────────────────────────────────────────────────
+// This module validates all required environment variables at startup.
+// If any required variable is missing or invalid, the server will refuse to start.
+// This prevents silent misconfiguration bugs in production.
 import {
   DEFAULT_ACCESS_EXPIRES_IN,
   DEFAULT_API_RATE_LIMIT_MAX,
@@ -9,6 +13,8 @@ import {
   DEFAULT_REFRESH_EXPIRES_IN,
 } from "./constants.js";
 
+// Parses and validates the PORT env variable.
+// Falls back to DEFAULT_PORT if not provided; throws if the value is out of range.
 function toValidPort(value) {
   if (value === undefined || value === null || value === "") {
     return DEFAULT_PORT;
@@ -22,6 +28,8 @@ function toValidPort(value) {
   return port;
 }
 
+// Generic helper to parse a positive integer env variable.
+// Uses `fallback` when the variable is absent, and throws a descriptive error on bad input.
 function toPositiveInt(value, fallback, label) {
   if (value === undefined || value === null || value === "") {
     return fallback;
@@ -33,8 +41,11 @@ function toPositiveInt(value, fallback, label) {
   return parsed;
 }
 
+// validateEnv — reads, validates, and returns a typed config object.
+// Call this once at server startup; the returned object is the single source of truth
+// for all environment-dependent configuration throughout the app.
 export function validateEnv(env = process.env) {
-  const errors = [];
+  const errors = [];  // Collect all validation errors before throwing
   const nodeEnv = env.NODE_ENV || "development";
   const isProduction = nodeEnv === "production";
 
